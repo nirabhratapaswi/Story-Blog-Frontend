@@ -1,6 +1,31 @@
-<mat-card *ngFor="let card of cards; let myIndex = index;">
+<!-- <mat-card *ngFor="let card of cards; let myIndex = index;">
 	<mat-card-title>Story {{myIndex+1}}</mat-card-title>
 	<mat-card-subtitle>{{ date }}</mat-card-subtitle>
 	<mat-card-content>This is my story ... blah blah blah ...his is my story ... blah blah blah ...his is my story ... blah blah blah ...his is my story ... blah blah blah ...his is my story ... blah blah blah ...his is my story ... blah blah blah ...his is my story ... blah blah blah ...his is my story ... blah blah blah ...his is my story ... blah blah blah ...his is my story ... blah blah blah ...his is my story ... blah blah blah ...his is my story ... blah blah blah ...his is my story ... blah blah blah ...</mat-card-content>
 	<mat-card-footer>Credits :  author 1, author 2 ...etc etc</mat-card-footer>
-</mat-card>
+</mat-card> -->
+<div *ngFor="let story of stories; let storyIndex = index;" onmousedown='return false;' onselectstart='return false;'>
+  <br>
+  <mat-card class="story_card">
+    <mat-card-title class="center"><h2>{{ story.title }}</h2></mat-card-title>
+    <mat-card-subtitle>Created On: <i>{{ story.created_at }}</i></mat-card-subtitle>
+    <mat-card-content>{{ story.text }}</mat-card-content>
+    <mat-card-footer>Credits :
+      	<span *ngFor="let author of story.authors; let authorIndex = index;">
+			<i>{{ author }}</i>
+			<span *ngIf="authorIndex < story.authors.length-1">, </span>
+      	</span>
+      	<mat-icon class="mat-icon-rtl-mirror" svgIcon="assets/images/favourite.svg"></mat-icon>
+      	<span *ngIf="story.likeStatus">
+			<!-- <button mat-button color="primary" (click)="likeStory(story._id, storyIndex)">Like</button> -->
+			<button type="button" color="primary" mat-icon-button (click)="likeStory(story._id, storyIndex)"><mat-icon>thumb_up</mat-icon></button>
+		</span>
+      	<span *ngIf="!story.likeStatus">
+			<!-- <button mat-button color="warn" (click)="likeStory(story._id, storyIndex)">Like</button> -->
+			<button type="button" color="warn" mat-icon-button (click)="likeStory(story._id, storyIndex)"><mat-icon>thumb_up</mat-icon></button>
+		</span>
+    <span>+ {{ story.likes.length }}</span>
+    </mat-card-footer>
+  </mat-card>
+</div>
+<br>

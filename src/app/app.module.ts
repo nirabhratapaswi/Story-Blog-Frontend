@@ -11,9 +11,17 @@ import { HomeComponent } from './home/home.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MyNavComponent } from './my-nav/my-nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatCheckboxModule, MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatCardModule } from '@angular/material';
+import { MatDialogModule, MatMenuModule, MatProgressSpinnerModule, MatCheckboxModule, MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatCardModule, MatFormFieldModule, MatOptionModule, MatSelectModule, MatInputModule } from '@angular/material';
 import { StoriesComponent } from './stories/stories.component';
+import { LoginComponent } from './login/login.component';
+import { AdminComponent } from './admin/admin.component';
+import { AuthGuard } from "./auth.guard";
+import { UploadComponent } from './upload/upload.component';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { ProfileComponent } from './profile/profile.component';
 // import { AppRoutingModule } from './/app-routing.module';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { StoriesServiceService } from './stories-service.service';
 
 @NgModule({
   declarations: [
@@ -21,7 +29,11 @@ import { StoriesComponent } from './stories/stories.component';
     HelloComponent,
     HomeComponent,
     MyNavComponent,
-    StoriesComponent
+    StoriesComponent,
+    LoginComponent,
+    AdminComponent,
+    UploadComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -39,20 +51,48 @@ import { StoriesComponent } from './stories/stories.component';
       {
         path: 'stories',
         component: StoriesComponent
+      },
+      {
+        path: 'login',
+        component: LoginComponent
+      },
+      {
+        path: 'admin',
+        component: AdminComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'upload',
+        component: UploadComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'profile',
+        component: ProfileComponent,
+        canActivate: [AuthGuard]
       }
     ]),
     BrowserAnimationsModule,
     LayoutModule,
+    MatDialogModule,
+    MatMenuModule,
+    MatProgressSpinnerModule,
     MatCheckboxModule,
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule,
     MatIconModule,
     MatListModule,
-    MatCardModule
+    MatCardModule,
+    MatFormFieldModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatInputModule,
+    AngularSvgIconModule,
+    Ng2SmartTableModule
     // AppRoutingModule
   ],
-  providers: [RecordsService],
+  providers: [RecordsService, AuthGuard, StoriesServiceService],
   bootstrap: [AppComponent],
   exports: [
   ]

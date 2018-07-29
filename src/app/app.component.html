@@ -1,6 +1,30 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <!-- <input [(ngModel)]="inputVal"> -->
-
-<!-- <app-hello></app-hello> -->
-
-<my-nav></my-nav>
+<!-- <app-hello><//app-hello> -->
+<!-- <my-nav></my-nav> -->
+<mat-toolbar color="primary" style="position: fixed; z-index: 1000; height: 50px;">
+  <mat-toolbar-row>
+    <span><!-- <img src="./assets/logo.png"> --></span>
+    <!-- <span class="align-center"></span> -->
+    <span class="example-spacer"></span>
+    <button mat-button (click)="routerClick('')">Home</button>
+    <button mat-button (click)="routerClick('stories')">Stories</button>
+    <button *ngIf="!isLoggedIn()" mat-button (click)="routerClick('login')">Login</button>
+    <button *ngIf="isAdmin()" mat-button (click)="routerClick('upload')">Upload</button>
+    <button *ngIf="isLoggedIn()" mat-button [matMenuTriggerFor]="menu">
+      <span>
+			<button type="button" color="primary-grey" mat-icon-button><mat-icon>account_circle</mat-icon></button>
+		</span>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="routerClick('profile')">Profile</button>
+      <button mat-menu-item (click)="logoutUser()">Logout</button>
+      <button *ngIf="isAdmin()" mat-menu-item (click)="routerClick('admin')">Admin Panel</button>
+    </mat-menu>
+    <!-- <button mat-button>About</button>
+    <button mat-button>Contact</button> -->
+  </mat-toolbar-row>
+</mat-toolbar>
+<div style="padding-top: 70px;">
+  <router-outlet></router-outlet>
+</div>

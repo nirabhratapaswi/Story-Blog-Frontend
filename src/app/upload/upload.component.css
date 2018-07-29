@@ -1,0 +1,35 @@
+.story_container {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  max-width: 80%;
+  height: 800px;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-align-content: center;
+  align-content: center;
+  text-align: center;
+  /*padding: 1%;*/
+}
+
+.mat-form-field {
+  margin-left: auto;
+  margin-right: auto;
+  /*min-height: 80px;
+  max-height: 440px;*/
+  width: 80%;
+}
+
+.story_title {
+  height: 50px;
+}
+
+.story_text {
+  height: 250px;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.story_authors {
+  height: 50px;
+}

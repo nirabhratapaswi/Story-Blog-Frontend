@@ -1,0 +1,59 @@
+.story_card {
+  margin: auto;
+  max-width: 70%;
+  max-height: 480px;
+  /*padding: 1%;*/
+}
+
+.mat-card-title {
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-align-content: center;
+  align-content: center;
+  text-align: center;
+  height: 80px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.mat-card-subtitle {
+  text-align: right;
+  max-height: 50px;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.mat-card-content {
+  max-height: 300px;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.mat-card-footer {
+  max-height: 50px;
+  overflow-x: auto;
+  overflow-y: auto;
+  padding-left: 1%;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: grey; 
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #b30000; 
+}

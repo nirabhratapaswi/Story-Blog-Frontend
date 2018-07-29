@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { AuthService } from './auth.service';
+import { Router } from '@angular/router';
 
 function functionDecorator(target, name, descriptor) {
 	console.log("Target:" , target, ", name:", name, ", descriptor: ", descriptor);
@@ -38,7 +40,7 @@ export class AppComponent {
 
   inputVal = 'hello';
 
-  constructor() {
+  constructor(private Auth: AuthService, private router: Router) {
   	console.log(this.aSimpleMethod(5, 2));
   }
 
@@ -46,5 +48,31 @@ export class AppComponent {
   aSimpleMethod(a, b) {
   	console.log("Hello World!!");
   	return a*b;
+  }
+
+  routerClick(page) {
+  	console.log("Page: ", page);
+  	this.router.navigateByUrl('/'.concat(page));
+  }
+
+  isAdmin() {
+  	return this.Auth.getAdminStatus();
+  }
+
+  isLoggedIn() {
+  	return this.Auth.isLoggedIn;
+  }
+
+  logoutUser() {
+  	this.Auth.logout().subscribe(data => {
+  		if (data.success) {
+  			console.log("Logout successful!!");
+  			this.router.navigate([""]);
+  			this.Auth.setLoggedIn(false);
+  		} else {
+  			console.log("Logout failed");
+  		}
+  		console.log("Data: ", data, ' recieved from the server.');
+  	});
   }
 }

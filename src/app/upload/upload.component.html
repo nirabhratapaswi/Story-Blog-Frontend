@@ -1,0 +1,23 @@
+<div class="story_container">
+  <mat-form-field class="story_title" appearance="outline">
+    <input class="story_title" matInput placeholder="Title" id="title" [(ngModel)]="title">
+  </mat-form-field>
+  <br><br><br>
+  <mat-form-field class="story_text" appearance="outline">
+    <textarea class="story_text" matInput placeholder="Story Text" id="text" [(ngModel)]="text"></textarea>
+  </mat-form-field>
+  <br><br><br>
+  <mat-form-field class="story_authors" appearance="outline">
+    <textarea class="story_authors" matInput placeholder="Authors" id="author" [(ngModel)]="author"></textarea>
+  </mat-form-field>
+  <br><br><br>
+  <!-- <mat-form-field>
+    <mat-select placeholder="Select">
+      <mat-option value="option">Option</mat-option>
+    </mat-select>
+  </mat-form-field> -->
+  <div class="button-row text-center">
+    <button mat-raised-button color="primary" (click)="uploadStory($event)">Post Story</button>
+  </div>
+</div>
+<br><br>

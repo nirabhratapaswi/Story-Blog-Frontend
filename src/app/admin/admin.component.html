@@ -1,0 +1,19 @@
+<!-- <div class="story_container">
+  <mat-form-field class="story_title" appearance="outline">
+    <input matInput placeholder="Title" id="title" [(ngModel)]="title">
+  </mat-form-field>
+  <br>
+  <mat-form-field class="story_text" appearance="outline">
+    <textarea class="story_text" matInput placeholder="Story Text" id="text" [(ngModel)]="text"></textarea>
+  </mat-form-field>
+  <br>
+  <mat-form-field class="story_authors" appearance="outline">
+    <textarea matInput placeholder="Authors" id="author" [(ngModel)]="author"></textarea>
+  </mat-form-field>
+  <div class="button-row text-center">
+    <button mat-raised-button color="primary" (click)="uploadStory($event)">Post Story</button>
+  </div>
+</div> -->
+
+<input #search class="search" type="text" placeholder="Search..." (keydown.enter)="onSearch(search.value)">
+<ng2-smart-table [settings]="settings" [source]="source" (userRowSelect)="rowSelect($event)" (editConfirm)="editRow($event)" (deleteConfirm)="deleteRow($event)"></ng2-smart-table>

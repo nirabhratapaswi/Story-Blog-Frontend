@@ -34,6 +34,7 @@ export class HelloComponent implements OnInit {
  	ngOnInit() {
  		this.recordsFromRecordsService.getRecords()
 	 		.subscribe(data => {
+	 			console.log(data);
 					this.records =  data.data;
 				});
  		/*this.records = [
