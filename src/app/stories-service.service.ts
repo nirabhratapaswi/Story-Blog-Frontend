@@ -21,6 +21,7 @@ interface storiesData {
 export class StoriesServiceService {
 
 	stories: Array<any> = null;
+  mostLikedStories: Array<any> = null;
 	private subject = new Subject<any>();
 	message: any;
     subscription: Subscription;
@@ -36,6 +37,7 @@ export class StoriesServiceService {
   				//
   			} else {
   				this.getStories();
+          this.getMostLikedStories();
   			}
   		});
   	}
@@ -52,10 +54,9 @@ export class StoriesServiceService {
         return this.subject.asObservable();
     }
 
-  	getStories() {
-		console.log();
+  getStories() {
 	  	return this.http.get<storiesData[]>("http://localhost:3000/stories", {}).subscribe(data => {
-	  		console.log("Data from server: ", data);
+	  		console.log("All Stories: ", data);
 	  		for (let i=0; i<data.length; i++) {
 	  			data[i].likeStatus = false;
 	  		}
@@ -64,17 +65,48 @@ export class StoriesServiceService {
 	  	});
   }
 
+  getMostLikedStories() {
+      return this.http.get<storiesData[]>("http://localhost:3000/stories/mostLikes", {}).subscribe(data => {
+        console.log("Most Liked Stories: ", data);
+        for (let i=0; i<data.length; i++) {
+          data[i].likeStatus = false;
+        }
+        this.mostLikedStories = data;
+        this.sendMessage(this.selfMessage);
+      });
+  }
+
+  getMostLikedStoriesVariable() {
+    return this.mostLikedStories;
+  }
+
+  getOneStory(storyId) {
+    return this.http.get<storiesData[]>("http://localhost:3000/stories/getOne/".concat(storyId), {});
+  }
+
   getStoriesVariable() {
   	return this.stories;
   }
 
   getStoriesVariableViaCallback(callback) {
   	return this.http.get<storiesData[]>("http://localhost:3000/stories", {}).subscribe(data => {
-	  		console.log("Data from server: ", data);
+	  		console.log("All Stories: ", data);
 	  		for (let i=0; i<data.length; i++) {
 	  			data[i].likeStatus = false;
 	  		}
+        this.stories = data;
 	  		callback(data);
 	  	});
+  }
+
+  getMostLikedStoriesVariableViaCallback(callback) {
+    return this.http.get<storiesData[]>("http://localhost:3000/stories/mostLikes", {}).subscribe(data => {
+        console.log("Most Liked Stories: ", data);
+        for (let i=0; i<data.length; i++) {
+          data[i].likeStatus = false;
+        }
+        this.mostLikedStories = data;
+        callback(data);
+      });
   }
 }

@@ -3,6 +3,7 @@ import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StoriesServiceService } from '../stories-service.service';
+import { WritersService } from '../writers.service';
 
 interface myData {
   success: boolean,
@@ -22,7 +23,7 @@ export class UploadComponent implements OnInit {
 	text: string;
 	author: string;
 
-  constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService) {
+  constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService, private writersService: WritersService) {
   	console.log("Upload component initialized...");
   }
 
@@ -50,6 +51,7 @@ export class UploadComponent implements OnInit {
         this.text = null;
         this.author = null;
         this.storiesService.sendMessage('Deleted Story from Admin Component!');
+        this.writersService.sendMessage('Deleted Story from Admin Component!');
       }
   	});
   }

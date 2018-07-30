@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { StoriesServiceService } from '../stories-service.service';
+import { WritersService } from '../writers.service';
 import { Subscription } from 'rxjs';
 
 export interface DialogData {
@@ -87,7 +88,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     // 'AND' by default, so changing to 'OR' by setting false here
   }
 
-  constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService) {
+  constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService, private writersService: WritersService) {
     this.source = new LocalDataSource(this.stories); // create the source
     this.subscription = this.storiesService.getMessage().subscribe(message => {
       console.log("Message recieved by Admin Component: ", message);
@@ -136,6 +137,7 @@ export class AdminComponent implements OnInit, OnDestroy {
         event.confirm.resolve(event.newData);
         // this.storiesService.getStories();
         this.storiesService.sendMessage('Edited Story from Admin Component!');
+        this.writersService.sendMessage('Edited Story from Admin Component!');
       } else {
         event.confirm.reject();
       }
@@ -155,6 +157,7 @@ export class AdminComponent implements OnInit, OnDestroy {
         event.confirm.resolve();
         // this.storiesService.getStories();
         this.storiesService.sendMessage('Deleted Story from Admin Component!');
+        this.writersService.sendMessage('Deleted Story from Admin Component!');
       } else {
         event.confirm.reject();
       }

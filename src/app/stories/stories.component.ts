@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../auth.service';
 import { StoriesServiceService } from '../stories-service.service';
+import { WritersService } from '../writers.service';
 import { Subscription } from 'rxjs';
 
 interface storiesData {
@@ -25,10 +26,16 @@ export class StoriesComponent implements OnInit {
 	cards: Array<any> = [];
 	date: String = (new Date()).toString();
 	stories: Array<any> = null;
+	mostLikedStories: Array<any> = null;
 	message: any;
     subscription: Subscription;
+    writers: Array<any> = null;
+    singleStory: any = null;
+    storyId: String = "";
+    selectedFilter: string = "All Stories";
+  	filters: string[] = ["All Stories", "Maximum Likes", "Writers"];
 
-	constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService) {
+	constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService, private writersService: WritersService) {
 		/*for (let i=0; i<10; i++) {
 			this.cards.push('hello');
 		}*/
@@ -36,11 +43,17 @@ export class StoriesComponent implements OnInit {
 			console.log("Message recieved by storiesComponent: ", message);
 			this.message = message;
 			this.stories = this.storiesService.getStoriesVariable();
+			this.mostLikedStories = this.storiesService.getMostLikedStoriesVariable();
+			if (this.selectedFilter == "Single Story") {
+				this.goToStory(this.storyId);
+			}
 		});
 	}
 
 	ngOnInit() {
 		this.getStories();
+		this.getWriters();
+		this.getMostLikedStories();
 	}
 
 	getStories() {
@@ -53,11 +66,46 @@ export class StoriesComponent implements OnInit {
 	  	} else {
 	  		this.stories = this.storiesService.getStoriesVariable();
 	  	}
-  }
+  	}
 
-  getStoriesVariable() {
+  	getMostLikedStories() {
+	  	let self = this;
+	  	function callback(mostLikedStories) {
+	  		self.mostLikedStories = mostLikedStories;
+	  	}
+	  	if (this.storiesService.getMostLikedStoriesVariable() == null) {
+	  		this.storiesService.getMostLikedStoriesVariableViaCallback(callback);
+	  	} else {
+	  		this.mostLikedStories = this.storiesService.getMostLikedStoriesVariable();
+	  	}
+  	}
+
+  	getWriters() {
+  		let self = this;
+		function callback(writers) {
+	  		self.writers = writers;
+	  	}
+	  	if (this.writersService.getWritersVariable() == null) {
+	  		this.writersService.getWritersVariableViaCallback(callback);
+	  	} else {
+	  		this.writers = this.writersService.getWritersVariable();
+	  	}
+  	}
+
+  	goToStory(storyId) {
+  		this.storyId = storyId;
+  		console.log("Requested to go to story with id:", storyId);
+  		this.storiesService.getOneStory(storyId).subscribe(data => {
+	        // console.log("Single story data from server: ", data);
+	        this.selectedFilter = "Single Story";
+	        this.singleStory = data;
+	        console.log("singleStory: ", data);
+      	});
+  	}
+
+  /*getStoriesVariable() {
   	return this.stories;
-  }
+  }*/
 
   likeStory(storyId: string, storyIndex: number) {
     console.log("Trying to like: ", storyId);
@@ -73,7 +121,9 @@ export class StoriesComponent implements OnInit {
     return this.http.get<storiesData>("http://localhost:3000/stories/like/".concat(storyId), httpOptions).subscribe(data => {
 		console.log("Data from server: ", data);
 		if (data.success) {
-			this.stories[storyIndex].likeStatus = !this.stories[storyIndex].likeStatus;
+			if (storyIndex) {
+				this.stories[storyIndex].likeStatus = !this.stories[storyIndex].likeStatus;
+			}
 			/*this.storiesService.getStories();
 			this.getStories();*/
 			this.storiesService.sendMessage("Message from Stories Component!");

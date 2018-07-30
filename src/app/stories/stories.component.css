@@ -1,7 +1,14 @@
 .story_card {
   margin: auto;
-  max-width: 70%;
-  max-height: 480px;
+  max-width: 90%;
+  max-height: 530px;
+  /*padding: 1%;*/
+}
+
+.full_story_card {
+  margin: auto;
+  max-width: 95%;
+  max-height: 100%;
   /*padding: 1%;*/
 }
 
@@ -11,7 +18,7 @@
   -webkit-align-content: center;
   align-content: center;
   text-align: center;
-  height: 80px;
+  height: 130px;
   overflow-x: auto;
   overflow-y: hidden;
 }
@@ -25,6 +32,18 @@
 
 .mat-card-content {
   max-height: 300px;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.full_story {
+  max-height: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.mat-card-content > .full_story {
+  max-height: 100%;
   overflow-x: auto;
   overflow-y: auto;
 }
@@ -56,4 +75,39 @@
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
     background: #b30000; 
+}
+
+.parentClass {
+  width: 100%;
+}
+
+.left {
+  width: 80%;
+  float: left;
+}
+
+.right {
+  width: 19.5%;
+  left: 80.5%;
+  height: 100%;
+  position: fixed;
+  border-left: solid;
+  border-left-width: 0.5%;
+  border-left-color: black;
+}
+
+.pointer {cursor: pointer;}
+
+.radio-group {
+  display: inline-flex;
+  flex-direction: column;
+  padding-left: 2%;
+}
+
+.radio-button {
+  margin: 5px;
+}
+
+.example-selected-value {
+  margin: 15px 0;
 }

@@ -22,8 +22,19 @@ interface myData {
 export class ProfileComponent implements OnInit {
 
   stories: Array<any> = [];
+  user: any = {
+    name: String,
+    username: String,
+    id: String
+  };
 
-  constructor(private http: HttpClient, private auth: AuthService) {}
+  constructor(private http: HttpClient, private auth: AuthService) {
+    this.user = {
+      name: "",
+      username: "",
+      id: ""
+    };
+  }
 
   ngOnInit() {
   	if (!this.auth.getJwtToken()) {
@@ -37,13 +48,15 @@ export class ProfileComponent implements OnInit {
     };
     let userDetails = this.auth.getUserData();
     console.log("User Details: ", userDetails);
-    return this.http.get<myData>("http://localhost:3000/users/getOne/".concat(userDetails.id), httpOptions).subscribe(data => {
-		console.log("Data from server: ", data);
-		if (data.success) {
-			//
-		}
-		this.stories = data.likedStories;
-	});
+    this.http.get<myData>("http://localhost:3000/users/getOne/".concat(userDetails.id), httpOptions).subscribe(data => {
+  		console.log("Data from server: ", data);
+  		if (data.success) {
+  			//
+  		}
+  		this.stories = data.likedStories;
+  	});
+
+    this.user = this.auth.getUserData();
   }
 
 }

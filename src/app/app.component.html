@@ -7,14 +7,42 @@
     <span><!-- <img src="./assets/logo.png"> --></span>
     <!-- <span class="align-center"></span> -->
     <span class="example-spacer"></span>
-    <button mat-button (click)="routerClick('')">Home</button>
-    <button mat-button (click)="routerClick('stories')">Stories</button>
-    <button *ngIf="!isLoggedIn()" mat-button (click)="routerClick('login')">Login</button>
-    <button *ngIf="isAdmin()" mat-button (click)="routerClick('upload')">Upload</button>
+    <button mat-button (click)="routerClick('')">
+      <div *ngIf="selectedTab=='Home'">
+        <u>Home</u>
+      </div>
+      <div *ngIf="selectedTab!='Home'">
+        Home
+      </div>
+    </button>
+    <button mat-button (click)="routerClick('stories')">
+      <div *ngIf="selectedTab=='Stories'">
+        <u>Stories</u>
+      </div>
+      <div *ngIf="selectedTab!='Stories'">
+        Stories
+      </div>
+    </button>
+    <button *ngIf="!isLoggedIn()" mat-button (click)="routerClick('login')">
+      <div *ngIf="selectedTab=='Login'">
+        <u>Login</u>
+      </div>
+      <div *ngIf="selectedTab!='Login'">
+        Login
+      </div>
+    </button>
+    <button *ngIf="isAdmin()" mat-button (click)="routerClick('upload')">
+      <div *ngIf="selectedTab=='Upload'">
+        <u>Upload</u>
+      </div>
+      <div *ngIf="selectedTab!='Upload'">
+        Upload
+      </div>
+    </button>
     <button *ngIf="isLoggedIn()" mat-button [matMenuTriggerFor]="menu">
       <span>
-			<button type="button" color="primary-grey" mat-icon-button><mat-icon>account_circle</mat-icon></button>
-		</span>
+      <button type="button" color="primary-grey" mat-icon-button><mat-icon>account_circle</mat-icon></button>
+    </span>
     </button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="routerClick('profile')">Profile</button>

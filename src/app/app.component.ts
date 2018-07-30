@@ -37,8 +37,14 @@ const myClassObj = new myClass(1, 2, 3);*/
 // @classDecorator
 export class AppComponent {
   title = 'app';
-
   inputVal = 'hello';
+  selectedTab: String = "";
+  selectedTabMap: any = {
+    "": "Home",
+    "stories": "Stories",
+    "login": "Login",
+    "upload": "Upload"
+  };
 
   constructor(private Auth: AuthService, private router: Router) {
   	console.log(this.aSimpleMethod(5, 2));
@@ -52,6 +58,7 @@ export class AppComponent {
 
   routerClick(page) {
   	console.log("Page: ", page);
+    this.selectedTab = this.selectedTabMap[page];
   	this.router.navigateByUrl('/'.concat(page));
   }
 

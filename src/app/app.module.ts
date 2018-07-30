@@ -11,7 +11,7 @@ import { HomeComponent } from './home/home.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MyNavComponent } from './my-nav/my-nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatDialogModule, MatMenuModule, MatProgressSpinnerModule, MatCheckboxModule, MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatCardModule, MatFormFieldModule, MatOptionModule, MatSelectModule, MatInputModule } from '@angular/material';
+import { MatRadioModule, MatDialogModule, MatMenuModule, MatProgressSpinnerModule, MatCheckboxModule, MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatCardModule, MatFormFieldModule, MatOptionModule, MatSelectModule, MatInputModule } from '@angular/material';
 import { StoriesComponent } from './stories/stories.component';
 import { LoginComponent } from './login/login.component';
 import { AdminComponent } from './admin/admin.component';
@@ -74,6 +74,7 @@ import { StoriesServiceService } from './stories-service.service';
     ]),
     BrowserAnimationsModule,
     LayoutModule,
+    MatRadioModule,
     MatDialogModule,
     MatMenuModule,
     MatProgressSpinnerModule,
