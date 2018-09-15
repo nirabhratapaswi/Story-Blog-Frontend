@@ -6,6 +6,7 @@ import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { StoriesServiceService } from '../stories-service.service';
 import { WritersService } from '../writers.service';
 import { Subscription } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface DialogData {
   animal: string;
@@ -33,6 +34,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   stories: Array<any> = [];
   message: any;
   subscription: Subscription;
+  serverUrl = environment.baseUrl.concat(":", environment.port.toString());
 
   settings = {
     columns: {
@@ -128,7 +130,7 @@ export class AdminComponent implements OnInit, OnDestroy {
         'Authorization': this.auth.getJwtToken()
       })
     };
-    return this.http.post<myData>("http://localhost:3000/stories/update/".concat(event.newData._id), {
+    return this.http.post<myData>(this.serverUrl.concat("/stories/update/", event.newData._id), {
       authors: event.newData.authors.join(),
       text: event.newData.text,
       title: event.newData.title
@@ -152,7 +154,7 @@ export class AdminComponent implements OnInit, OnDestroy {
         'Authorization': this.auth.getJwtToken()
       })
     };
-    return this.http.get<myData>("http://localhost:3000/stories/delete/".concat(event.data._id), httpOptions).subscribe(data => {
+    return this.http.get<myData>(this.serverUrl.concat("/stories/delete/", event.data._id), httpOptions).subscribe(data => {
       if (data.success) {
         event.confirm.resolve();
         // this.storiesService.getStories();

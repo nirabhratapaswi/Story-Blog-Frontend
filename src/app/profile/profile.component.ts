@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
 
 interface myData {
   success: boolean,
@@ -22,6 +23,7 @@ interface myData {
 export class ProfileComponent implements OnInit {
 
   stories: Array<any> = [];
+  serverUrl = environment.baseUrl.concat(":", environment.port.toString());
   user: any = {
     name: String,
     username: String,
@@ -48,7 +50,7 @@ export class ProfileComponent implements OnInit {
     };
     let userDetails = this.auth.getUserData();
     console.log("User Details: ", userDetails);
-    this.http.get<myData>("http://localhost:3000/users/getOne/".concat(userDetails.id), httpOptions).subscribe(data => {
+    this.http.get<myData>(this.serverUrl.concat("/users/getOne/", userDetails.id), httpOptions).subscribe(data => {
   		console.log("Data from server: ", data);
   		if (data.success) {
   			//

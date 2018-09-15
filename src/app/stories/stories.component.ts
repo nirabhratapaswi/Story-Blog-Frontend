@@ -5,6 +5,7 @@ import { AuthService } from '../auth.service';
 import { StoriesServiceService } from '../stories-service.service';
 import { WritersService } from '../writers.service';
 import { Subscription } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 interface storiesData {
   success: boolean,
@@ -34,6 +35,7 @@ export class StoriesComponent implements OnInit {
     storyId: String = "";
     selectedFilter: string = "All Stories";
   	filters: string[] = ["All Stories", "Maximum Likes", "Writers"];
+  	serverUrl = environment.baseUrl.concat(":", environment.port.toString());
 
 	constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService, private writersService: WritersService) {
 		/*for (let i=0; i<10; i++) {
@@ -118,7 +120,7 @@ export class StoriesComponent implements OnInit {
         'Authorization': this.auth.getJwtToken()
       })
     };
-    return this.http.get<storiesData>("http://localhost:3000/stories/like/".concat(storyId), httpOptions).subscribe(data => {
+    return this.http.get<storiesData>(this.serverUrl.concat("/stories/like/", storyId), httpOptions).subscribe(data => {
 		console.log("Data from server: ", data);
 		if (data.success) {
 			if (storyIndex) {

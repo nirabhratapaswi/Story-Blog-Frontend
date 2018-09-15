@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../environments/environment';
 
 interface myData {
   success: boolean,
@@ -20,6 +21,7 @@ export class AuthService {
   private loggedInStatus = false;
   private jwtToken: string = "lol-auth";
   private isAdmin: Boolean = false;
+  serverUrl = environment.baseUrl.concat(":", environment.port.toString());
   private userData: any = {
     name: "",
     username: "",
@@ -61,7 +63,7 @@ export class AuthService {
 
   getUserDetails(username: String, password: String) {
   	console.log("Username: ", username, "\nPassword: ", password);
-  	return this.http.post<myData>("http://localhost:3000/login", {
+  	return this.http.post<myData>(this.serverUrl.concat("/login"), {
   		username: username,
   		password: password
   	});
@@ -79,14 +81,14 @@ export class AuthService {
         'Authorization': this.jwtToken
       })
     };
-    return this.http.get<myData>("http://localhost:3000/login/secured", httpOptions);
+    return this.http.get<myData>(this.serverUrl.concat("/login/secured"), httpOptions);
   }
 
   logout() {
     this.loggedInStatus = false;
     this.isAdmin = false;
     this.jwtToken = null;
-    return this.http.post<myData>("http://localhost:3000/login/logout", {});
+    return this.http.post<myData>(this.serverUrl.concat("/login/logout"), {});
   }
 
 }

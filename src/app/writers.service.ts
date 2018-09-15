@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs';
 import { Subscription } from 'rxjs';
+import { environment } from '../environments/environment';
 
 interface writersData {
   success: boolean,
@@ -20,6 +21,7 @@ export class WritersService {
 
 	writers: Array<any> = null;
 	private subject = new Subject<any>();
+  serverUrl = environment.baseUrl.concat(":", environment.port.toString());
 	message: any;
     subscription: Subscription;
     selfMessage: String = "Personal Message for writersService.";
@@ -52,7 +54,7 @@ export class WritersService {
 
   	getWriters() {
 		console.log();
-	  	return this.http.get<writersData[]>("http://localhost:3000/writers", {}).subscribe(data => {
+	  	return this.http.get<writersData[]>(this.serverUrl.concat("/writers"), {}).subscribe(data => {
 	  		console.log("Writers Data from server: ", data);
 	  		this.writers = data;
 	  		this.sendMessage(this.selfMessage);
@@ -64,7 +66,7 @@ export class WritersService {
   }
 
   getWritersVariableViaCallback(callback) {
-  	return this.http.get<writersData[]>("http://localhost:3000/writers", {}).subscribe(data => {
+  	return this.http.get<writersData[]>(this.serverUrl.concat("/writers"), {}).subscribe(data => {
 	  		console.log("Data from server: ", data);
 	  		callback(data);
 	  	});

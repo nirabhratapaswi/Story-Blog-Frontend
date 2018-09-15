@@ -1,6 +1,7 @@
 import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpHandler } from '@angular/common/http';
+import { environment } from '../environments/environment';
 
 interface myData {
 	data: Object
@@ -12,6 +13,7 @@ interface myData {
 export class RecordsService {
 
 	data: Object = [];
+	serverUrl = environment.baseUrl.concat(":", environment.port.toString());
 
 	constructor(private http: HttpClient) {
 		this.http = http;
@@ -41,6 +43,6 @@ export class RecordsService {
 
 	getRecords() {
 		// return this.data;
-		return this.http.get<myData>('http://localhost:3000/data');
+		return this.http.get<myData>(this.serverUrl.concat('/data'));
 	}
 }

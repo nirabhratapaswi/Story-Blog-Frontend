@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StoriesServiceService } from '../stories-service.service';
 import { WritersService } from '../writers.service';
+import { environment } from '../../environments/environment';
 
 interface myData {
   success: boolean,
@@ -22,6 +23,7 @@ export class UploadComponent implements OnInit {
 	title: string;
 	text: string;
 	author: string;
+  serverUrl = environment.baseUrl.concat(":", environment.port.toString());
 
   constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService, private writersService: WritersService) {
   	console.log("Upload component initialized...");
@@ -40,7 +42,7 @@ export class UploadComponent implements OnInit {
         'Authorization': this.auth.getJwtToken()
       })
     };
-  	return this.http.post<myData>("http://localhost:3000/stories/upload", {
+  	return this.http.post<myData>(this.serverUrl.concat("/stories/upload"), {
   		title: this.title,
   		text: this.text,
   		authors: this.author

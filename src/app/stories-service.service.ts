@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs';
 import { Subscription } from 'rxjs';
+import { environment } from '../environments/environment';
 
 interface storiesData {
   success: boolean,
@@ -23,6 +24,7 @@ export class StoriesServiceService {
 	stories: Array<any> = null;
   mostLikedStories: Array<any> = null;
 	private subject = new Subject<any>();
+  serverUrl = environment.baseUrl.concat(":", environment.port.toString());
 	message: any;
     subscription: Subscription;
     selfMessage: String = "Personal Message for storiesService.";
@@ -55,7 +57,7 @@ export class StoriesServiceService {
     }
 
   getStories() {
-	  	return this.http.get<storiesData[]>("http://localhost:3000/stories", {}).subscribe(data => {
+	  	return this.http.get<storiesData[]>(this.serverUrl.concat("/stories"), {}).subscribe(data => {
 	  		console.log("All Stories: ", data);
 	  		for (let i=0; i<data.length; i++) {
 	  			data[i].likeStatus = false;
@@ -66,7 +68,7 @@ export class StoriesServiceService {
   }
 
   getMostLikedStories() {
-      return this.http.get<storiesData[]>("http://localhost:3000/stories/mostLikes", {}).subscribe(data => {
+      return this.http.get<storiesData[]>(this.serverUrl.concat("/stories/mostLikes"), {}).subscribe(data => {
         console.log("Most Liked Stories: ", data);
         for (let i=0; i<data.length; i++) {
           data[i].likeStatus = false;
@@ -81,7 +83,7 @@ export class StoriesServiceService {
   }
 
   getOneStory(storyId) {
-    return this.http.get<storiesData[]>("http://localhost:3000/stories/getOne/".concat(storyId), {});
+    return this.http.get<storiesData[]>(this.serverUrl.concat("/stories/getOne/").concat(storyId), {});
   }
 
   getStoriesVariable() {
@@ -89,7 +91,7 @@ export class StoriesServiceService {
   }
 
   getStoriesVariableViaCallback(callback) {
-  	return this.http.get<storiesData[]>("http://localhost:3000/stories", {}).subscribe(data => {
+  	return this.http.get<storiesData[]>(this.serverUrl.concat("/stories"), {}).subscribe(data => {
 	  		console.log("All Stories: ", data);
 	  		for (let i=0; i<data.length; i++) {
 	  			data[i].likeStatus = false;
@@ -100,7 +102,7 @@ export class StoriesServiceService {
   }
 
   getMostLikedStoriesVariableViaCallback(callback) {
-    return this.http.get<storiesData[]>("http://localhost:3000/stories/mostLikes", {}).subscribe(data => {
+    return this.http.get<storiesData[]>(this.serverUrl.concat("/stories/mostLikes"), {}).subscribe(data => {
         console.log("Most Liked Stories: ", data);
         for (let i=0; i<data.length; i++) {
           data[i].likeStatus = false;
