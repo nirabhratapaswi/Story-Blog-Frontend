@@ -23,38 +23,51 @@ export class StoriesServiceService {
 
 	stories: Array<any> = null;
   mostLikedStories: Array<any> = null;
+  stories_chunk: Array<any> = new Array();
+  most_liked_stories_chunk: Array<any> = new Array();
 	private subject = new Subject<any>();
   serverUrl = environment.baseUrl.concat(":", environment.port.toString());
 	message: any;
-    subscription: Subscription;
-    selfMessage: String = "Personal Message for storiesService.";
+  subscription: Subscription;
+  selfMessage: String = "Personal Message for storiesService.";
 
-  	constructor(private http: HttpClient, private auth: AuthService) {
-  		console.log("Stories Service constructor called...");
-  		this.getStories();
-  		this.subscription = this.getMessage().subscribe(message => {
-  			console.log("Message recieved by stories-service: ", message);
-  			this.message = message;
-  			if (message.text == this.selfMessage || message.text == this.selfMessage.toString()) {
-  				//
-  			} else {
-  				this.getStories();
-          this.getMostLikedStories();
-  			}
-  		});
-  	}
+  constructor(private http: HttpClient, private auth: AuthService) {
+  	console.log("Stories Service constructor called...");
+  	this.getStories();
+  	this.subscription = this.getMessage().subscribe(message => {
+  		console.log("Message recieved by stories-service: ", message);
+  		this.message = message;
+  		if (message.text == this.selfMessage || message.text == this.selfMessage.toString()) {
+  			//
+  		} else {
+  			this.getStories();
+        this.getMostLikedStories();
+  		}
+  	});
+  }
 
-  	sendMessage(message: String) {
-        this.subject.next({ text: message });
-    }
+ sendMessage(message: String) {
+      this.subject.next({ text: message });
+  }
  
-    clearMessage() {
-        this.subject.next();
-    }
+  clearMessage() {
+      this.subject.next();
+  }
  
-    getMessage(): Observable<any> {
-        return this.subject.asObservable();
-    }
+  getMessage(): Observable<any> {
+      return this.subject.asObservable();
+  }
+
+  loadStories(offset: number, size: number) {
+    return this.http.get<storiesData[]>(this.serverUrl.concat("/stories/chunk/", offset.toString(), "/", size.toString()), {}).subscribe(data => {
+      console.log("All Stories: ", data);
+      for (let i=0; i<data.length; i++) {
+        data[i].likeStatus = false;
+      }
+      this.stories = data;
+      this.sendMessage(this.selfMessage);
+    });
+  }
 
   getStories() {
 	  	return this.http.get<storiesData[]>(this.serverUrl.concat("/stories"), {}).subscribe(data => {
@@ -82,6 +95,10 @@ export class StoriesServiceService {
     return this.mostLikedStories;
   }
 
+  getMostLikedStoriesVariableChunk() {
+    return this.most_liked_stories_chunk;
+  }
+
   getOneStory(storyId) {
     return this.http.get<storiesData[]>(this.serverUrl.concat("/stories/getOne/").concat(storyId), {});
   }
@@ -90,15 +107,19 @@ export class StoriesServiceService {
   	return this.stories;
   }
 
+  getStoriesVariableChunk() {
+    return this.stories_chunk;
+  }
+
   getStoriesVariableViaCallback(callback) {
-  	return this.http.get<storiesData[]>(this.serverUrl.concat("/stories"), {}).subscribe(data => {
-	  		console.log("All Stories: ", data);
-	  		for (let i=0; i<data.length; i++) {
-	  			data[i].likeStatus = false;
-	  		}
+    return this.http.get<storiesData[]>(this.serverUrl.concat("/stories"), {}).subscribe(data => {
+        console.log("All Stories: ", data);
+        for (let i=0; i<data.length; i++) {
+          data[i].likeStatus = false;
+        }
         this.stories = data;
-	  		callback(data);
-	  	});
+        callback(data);
+      });
   }
 
   getMostLikedStoriesVariableViaCallback(callback) {
@@ -109,6 +130,32 @@ export class StoriesServiceService {
         }
         this.mostLikedStories = data;
         callback(data);
+      });
+  }
+
+  getStoriesVariableChunkViaCallback(offset: number, size: number, callback) {
+    return this.http.get<storiesData[]>(this.serverUrl.concat("/stories/chunk/", offset.toString(), "/", size.toString()), {}).subscribe(data => {
+        console.log("All Stories: ", data);
+        for (let i=0; i<data.length; i++) {
+          data[i].likeStatus = false;
+        }
+        for (let x in data) {
+          this.stories_chunk.push(data[x]);
+        }
+        callback(this.stories_chunk);
+      });
+  }
+
+  getMostLikedStoriesVariableChunkViaCallback(offset: number, size: number, callback) {
+    return this.http.get<storiesData[]>(this.serverUrl.concat("/stories/chunk/mostLikes/", offset.toString(), "/", size.toString()), {}).subscribe(data => {
+        console.log("Most Liked Stories: ", data);
+        for (let i=0; i<data.length; i++) {
+          data[i].likeStatus = false;
+        }
+        for (let x in data) {
+          this.most_liked_stories_chunk.push(data[x]);
+        }
+        callback(this.most_liked_stories_chunk);
       });
   }
 }

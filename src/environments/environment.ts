@@ -8,6 +8,12 @@ export const environment = {
   port: 3000
 };
 
+/*export const environment = {
+  production: false,
+  baseUrl: "http://localhost",
+  port: 3000
+};*/
+
 /*
  * In development mode, to ignore zone related error stack frames such as
  * `zone.run`, `zoneDelegate.invokeTask` for easier debugging, you can

@@ -35,6 +35,8 @@ export class StoriesComponent implements OnInit {
     storyId: String = "";
     selectedFilter: string = "All Stories";
   	filters: string[] = ["All Stories", "Maximum Likes", "Writers"];
+  	private offset: number;
+  	private size: number;
   	serverUrl = environment.baseUrl.concat(":", environment.port.toString());
 
 	constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService, private writersService: WritersService) {
@@ -53,9 +55,29 @@ export class StoriesComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.getStories();
+		/*this.getStories();
 		this.getWriters();
-		this.getMostLikedStories();
+		this.getMostLikedStories();*/
+		this.offset = 0;
+		this.size = 2;
+		this.loadMoreStories();
+	}
+
+	loadMoreStories() {
+		let self = this;
+	  	function callback(stories) {
+	  		self.stories = stories;
+	  		self.offset = self.stories.length;
+	  		console.log("Offset: ", self.offset, ", size: ", self.size);
+	  	}
+	  	// if (this.storiesService.getStoriesVariableChunk().length == 0) {
+	  		this.storiesService.getStoriesVariableChunkViaCallback(this.offset, this.size, callback);
+	  		console.log("Offset: ", this.offset, ", size: ", this.size);
+	  	/*} else {
+	  		this.stories = this.storiesService.getStoriesVariableChunk();
+	  		this.offset = this.stories.length;
+	  		console.log("Offset: ", this.offset, ", size: ", this.size);
+	  	}*/
 	}
 
 	getStories() {
