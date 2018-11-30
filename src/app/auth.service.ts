@@ -77,6 +77,7 @@ export class AuthService {
   getSecureRoute() {
     let httpOptions = {
       headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
         'Content-Type':  'application/json',
         'Authorization': this.jwtToken
       })

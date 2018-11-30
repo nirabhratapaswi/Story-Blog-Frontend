@@ -23,8 +23,8 @@ export class StoriesServiceService {
 
 	stories: Array<any> = null;
   mostLikedStories: Array<any> = null;
-  stories_chunk: Array<any> = new Array();
-  most_liked_stories_chunk: Array<any> = new Array();
+  stories_chunk: Array<any> = null;
+  most_liked_stories_chunk: Array<any> = null;
 	private subject = new Subject<any>();
   serverUrl = environment.baseUrl.concat(":", environment.port.toString());
 	message: any;
@@ -99,6 +99,10 @@ export class StoriesServiceService {
     return this.most_liked_stories_chunk;
   }
 
+  setMostLikedStoriesVariableChunk(value: Array<any>) {
+    this.most_liked_stories_chunk = value;
+  }
+
   getOneStory(storyId) {
     return this.http.get<storiesData[]>(this.serverUrl.concat("/stories/getOne/").concat(storyId), {});
   }
@@ -109,6 +113,10 @@ export class StoriesServiceService {
 
   getStoriesVariableChunk() {
     return this.stories_chunk;
+  }
+
+  setStoriesVariableChunk(value: Array<any>) {
+    this.stories_chunk = value;
   }
 
   getStoriesVariableViaCallback(callback) {
@@ -140,6 +148,9 @@ export class StoriesServiceService {
           data[i].likeStatus = false;
         }
         for (let x in data) {
+          if (this.stories_chunk == null) {
+            this.stories_chunk = new Array();
+          }
           this.stories_chunk.push(data[x]);
         }
         callback(this.stories_chunk);
@@ -153,9 +164,74 @@ export class StoriesServiceService {
           data[i].likeStatus = false;
         }
         for (let x in data) {
+          if (this.most_liked_stories_chunk == null) {
+            this.most_liked_stories_chunk = new Array();
+          }
           this.most_liked_stories_chunk.push(data[x]);
         }
         callback(this.most_liked_stories_chunk);
       });
   }
+
+  /*refreshStoriesVariableChunkViaCallback(offset: number, size: number, callback) {
+    let stories_chunk_new = null,
+        offsets = new Array();
+    for (let i=0; i<offset; i++) {
+      offsets.push(i*size);
+    }
+    return async.each(offsets, (offsetVariable, async_callback) => {
+      this.http.get<storiesData[]>(this.serverUrl.concat("/stories/chunk/", offsetVariable.toString(), "/", size.toString()), {}).subscribe(data => {
+        console.log("All Stories: ", data);
+        for (let i=0; i<data.length; i++) {
+          data[i].likeStatus = false;
+        }
+        for (let x in data) {
+          if (stories_chunk_new == null) {
+            stories_chunk_new = new Array();
+          }
+          stories_chunk_new.push(data[x]);
+        }
+        async_callback();
+      });
+    }, (err) => {
+      if (err) {
+        console.log("Error: ", err);
+        return null;
+      } else {
+        this.stories_chunk = stories_chunk_new;
+        return callback(this.stories_chunk);
+      }
+    });
+  }
+
+  refreshMostLikedStoriesVariableChunkViaCallback(offset: number, size: number, callback) {
+    let most_liked_stories_chunk_new = null,
+        offsets = new Array();
+    for (let i=0; i<offset; i++) {
+      offsets.push(i*size);
+    }
+    return async.each(offsets, (offsetVariable, async_callback) => {
+      this.http.get<storiesData[]>(this.serverUrl.concat("/stories/chunk/mostLikes/", offsetVariable.toString(), "/", size.toString()), {}).subscribe(data => {
+        console.log("All Stories: ", data);
+        for (let i=0; i<data.length; i++) {
+          data[i].likeStatus = false;
+        }
+        for (let x in data) {
+          if (most_liked_stories_chunk_new == null) {
+            most_liked_stories_chunk_new = new Array();
+          }
+          most_liked_stories_chunk_new.push(data[x]);
+        }
+        async_callback();
+      });
+    }, (err) => {
+      if (err) {
+        console.log("Error: ", err);
+        return null;
+      } else {
+        this.most_liked_stories_chunk = most_liked_stories_chunk_new;
+        return callback(this.most_liked_stories_chunk);
+      }
+    });
+  }*/
 }

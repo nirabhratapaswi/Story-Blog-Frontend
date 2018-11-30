@@ -35,48 +35,57 @@ export class StoriesComponent implements OnInit {
     storyId: String = "";
     selectedFilter: string = "All Stories";
   	filters: string[] = ["All Stories", "Maximum Likes", "Writers"];
-  	private offset: number;
-  	private size: number;
+  	private storyOffset: number;
+  	private storyChunkSize: number;
+  	private mostLikedOffset: number;
+  	private mostLikedChunkSize: number;
   	serverUrl = environment.baseUrl.concat(":", environment.port.toString());
 
 	constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService, private writersService: WritersService) {
-		/*for (let i=0; i<10; i++) {
-			this.cards.push('hello');
-		}*/
+		this.stories = this.storiesService.getStoriesVariableChunk();
+		this.mostLikedStories = this.storiesService.getMostLikedStoriesVariableChunk();
+		console.log("Stories, ", this.stories, ", mostLiekdStories: ", this.mostLikedStories);
+		this.storyChunkSize = 10;
+		if (this.stories == null) {
+			this.storyOffset = 0;
+			this.loadMoreStories();
+		} else {
+			this.storyOffset = this.stories.length;
+		}
+		this.mostLikedChunkSize = 10;
+		if (this.mostLikedStories == null) {
+			this.mostLikedOffset = 0;
+			this.loadMoreMostLikedStories();
+		} else {
+			this.mostLikedOffset = this.mostLikedStories.length;
+		}
 		this.subscription = this.storiesService.getMessage().subscribe(message => {
 			console.log("Message recieved by storiesComponent: ", message);
 			this.message = message;
-			this.stories = this.storiesService.getStoriesVariable();
-			this.mostLikedStories = this.storiesService.getMostLikedStoriesVariable();
+			this.stories = this.storiesService.getStoriesVariableChunk();	// this.storiesService.getStoriesVariable();
+			this.mostLikedStories = this.storiesService.getMostLikedStoriesVariableChunk();	// this.storiesService.getMostLikedStoriesVariable();
 			if (this.selectedFilter == "Single Story") {
 				this.goToStory(this.storyId);
 			}
 		});
 	}
 
-	ngOnInit() {
-		/*this.getStories();
-		this.getWriters();
-		this.getMostLikedStories();*/
-		this.offset = 0;
-		this.size = 2;
-		this.loadMoreStories();
-	}
+	ngOnInit() {}
 
 	loadMoreStories() {
 		let self = this;
 	  	function callback(stories) {
 	  		self.stories = stories;
-	  		self.offset = self.stories.length;
-	  		console.log("Offset: ", self.offset, ", size: ", self.size);
+	  		self.storyOffset = self.stories.length;
+	  		console.log("Story Offset: ", self.storyOffset, ", Story Chunk Size: ", self.storyChunkSize, ", stories: ", stories);
 	  	}
 	  	// if (this.storiesService.getStoriesVariableChunk().length == 0) {
-	  		this.storiesService.getStoriesVariableChunkViaCallback(this.offset, this.size, callback);
-	  		console.log("Offset: ", this.offset, ", size: ", this.size);
+	  		this.storiesService.getStoriesVariableChunkViaCallback(this.storyOffset, this.storyChunkSize, callback);
+	  		console.log("Story Offset: ", this.storyOffset, ", Story Chunk Size: ", this.storyChunkSize);
 	  	/*} else {
 	  		this.stories = this.storiesService.getStoriesVariableChunk();
-	  		this.offset = this.stories.length;
-	  		console.log("Offset: ", this.offset, ", size: ", this.size);
+	  		this.storyOffset = this.stories.length;
+	  		console.log("storyOffset: ", this.storyOffset, ", storySize: ", this.storyChunkSize);
 	  	}*/
 	}
 
@@ -104,6 +113,23 @@ export class StoriesComponent implements OnInit {
 	  	}
   	}
 
+  	loadMoreMostLikedStories() {
+		let self = this;
+	  	function callback(mostLikedStories) {
+	  		self.mostLikedStories = mostLikedStories;
+	  		self.mostLikedOffset = self.mostLikedStories.length;
+	  		console.log("Most Liked Offset: ", self.mostLikedOffset, ", most liked chunk size: ", self.mostLikedChunkSize, ", stories: ", mostLikedStories);
+	  	}
+	  	// if (this.storiesService.getStoriesVariableChunk().length == 0) {
+	  		this.storiesService.getMostLikedStoriesVariableChunkViaCallback(this.mostLikedOffset, this.mostLikedChunkSize, callback);
+	  		console.log("Most Liked Offset: ", this.mostLikedOffset, ", most liked chunk size: ", this.mostLikedChunkSize);
+	  	/*} else {
+	  		this.stories = this.storiesService.getStoriesVariableChunk();
+	  		this.mostLikedOffset = this.stories.length;
+	  		console.log("Offset: ", this.mostLikedOffset, ", size: ", this.mostLikedChunkSize);
+	  	}*/
+	}
+
   	getWriters() {
   		let self = this;
 		function callback(writers) {
@@ -127,10 +153,6 @@ export class StoriesComponent implements OnInit {
       	});
   	}
 
-  /*getStoriesVariable() {
-  	return this.stories;
-  }*/
-
   likeStory(storyId: string, storyIndex: number) {
     console.log("Trying to like: ", storyId);
     if (!this.auth.getJwtToken()) {
@@ -148,8 +170,24 @@ export class StoriesComponent implements OnInit {
 			if (storyIndex) {
 				this.stories[storyIndex].likeStatus = !this.stories[storyIndex].likeStatus;
 			}
-			/*this.storiesService.getStories();
-			this.getStories();*/
+			
+			this.storiesService.setStoriesVariableChunk(null);
+			this.storiesService.setMostLikedStoriesVariableChunk(null);
+			let storyOffsetSave = this.storyOffset;
+			for (let i=0; i<storyOffsetSave; i++) {
+				this.storyOffset = i;
+				this.loadMoreStories();
+				i += this.storyChunkSize;
+			}
+			this.storyOffset = storyOffsetSave;
+			let mostLikedOffsetSave = this.mostLikedOffset;
+			for (let i=0; i<storyOffsetSave; i++) {
+				this.mostLikedOffset = i;
+				this.loadMoreMostLikedStories();
+				i += this.storyChunkSize;
+			}
+			this.mostLikedOffset = mostLikedOffsetSave;
+
 			this.storiesService.sendMessage("Message from Stories Component!");
 		}
 	});

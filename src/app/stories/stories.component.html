@@ -45,14 +45,14 @@
               <mat-card-title class="center" (click)="goToStory(story._id)">
                 <h2 class="pointer">{{ story.title }}</h2>
                 <h6 style="text-align: left;">
-                  Authors -
+                  <!-- Authors --> - 
                   <span *ngFor="let author of story.authors; let authorIndex = index;">
                     <i>{{ author }}</i>
                     <span *ngIf="authorIndex < story.authors.length-1">, </span>
                   </span>
                 </h6>
               </mat-card-title>
-              <mat-card-subtitle onmousedown='return false;' onselectstart='return false;'>Created On: <i>{{ story.created_at }}</i></mat-card-subtitle>
+              <mat-card-subtitle onmousedown='return false;' onselectstart='return false;'>Posted: [<i>{{ story.created_at | date: 'dd/MM/yyyy' }}</i>]</mat-card-subtitle>
               <!-- <mat-card-content onmousedown='return false;' onselectstart='return false;'>{{ story.text }}</mat-card-content> -->
               <mat-card-footer onmousedown='return false;' onselectstart='return false;'>
                 <mat-icon class="mat-icon-rtl-mirror" svgIcon="assets/images/favourite.svg"></mat-icon>
@@ -70,7 +70,7 @@
           </mat-grid-tile>
         </div>
     </mat-grid-list>
-    <button class="text-center" mat-raised-button color="primary" (click)="loadMoreStories()">Load More</button>
+    <button class="text-center" mat-raised-button color="primary" (click)="loadMoreMostLikedStories()">Load More</button>
     <br>
   </div>
   <div class="left" *ngIf="selectedFilter==filters[2]">
@@ -121,5 +121,6 @@
         {{filter}}
       </mat-radio-button>
     </mat-radio-group>
+    <img src="assets/images/banner.jpg" alt="Banner for Site" style="width: 90%; height: 30%; padding-left: 2px; padding-top: 15px;">
   </div>
 </div>
