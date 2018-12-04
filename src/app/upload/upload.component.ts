@@ -23,6 +23,7 @@ export class UploadComponent implements OnInit {
 	title: string;
 	text: string;
 	author: string;
+  genre_tags: string;
   serverUrl = environment.baseUrl.concat(":", environment.port.toString());
 
   constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService, private writersService: WritersService) {
@@ -35,7 +36,7 @@ export class UploadComponent implements OnInit {
 
   uploadStory(event) {
   	event.preventDefault();
-  	console.log("title: ", this.title, ", text: ", this.text, ", author: ", this.author);
+  	console.log("title: ", this.title, ", text: ", this.text, ", author: ", this.author, ", genre_tags:", this.genre_tags);
   	let httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
@@ -45,15 +46,17 @@ export class UploadComponent implements OnInit {
   	return this.http.post<myData>(this.serverUrl.concat("/stories/upload"), {
   		title: this.title,
   		text: this.text,
-  		authors: this.author
+  		authors: this.author,
+      genre_tags: this.genre_tags
   	}, httpOptions).subscribe(data => {
   		console.log("Data from server: ", data);
       if (data.success) {
         this.title = null;
         this.text = null;
         this.author = null;
-        this.storiesService.sendMessage('Deleted Story from Admin Component!');
-        this.writersService.sendMessage('Deleted Story from Admin Component!');
+        this.genre_tags = null;
+        this.storiesService.sendMessage('Uploaded Story from Upload Component!');
+        this.writersService.sendMessage('Uploaded Story from Upload Component!');
       }
   	});
   }

@@ -52,13 +52,17 @@ export class WritersService {
         return this.subject.asObservable();
     }
 
-  	getWriters() {
+  getWriters() {
 		console.log();
 	  	return this.http.get<writersData[]>(this.serverUrl.concat("/writers"), {}).subscribe(data => {
 	  		console.log("Writers Data from server: ", data);
 	  		this.writers = data;
 	  		this.sendMessage(this.selfMessage);
 	  	});
+  }
+
+  getOneWriter(writer_id: string) {
+    return this.http.get<writersData[]>(this.serverUrl.concat("/writers/getOne/").concat(writer_id), {});
   }
 
   getWritersVariable() {

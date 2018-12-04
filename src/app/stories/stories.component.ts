@@ -32,7 +32,9 @@ export class StoriesComponent implements OnInit {
     subscription: Subscription;
     writers: Array<any> = null;
     singleStory: any = null;
-    storyId: String = "";
+    singleWriter: any = null;
+    story_id: String = "";
+    writer_id: String = "";
     selectedFilter: string = "All Stories";
   	filters: string[] = ["All Stories", "Maximum Likes", "Writers"];
   	private storyOffset: number;
@@ -59,13 +61,14 @@ export class StoriesComponent implements OnInit {
 		} else {
 			this.mostLikedOffset = this.mostLikedStories.length;
 		}
+		this.getWriters();
 		this.subscription = this.storiesService.getMessage().subscribe(message => {
 			console.log("Message recieved by storiesComponent: ", message);
 			this.message = message;
 			this.stories = this.storiesService.getStoriesVariableChunk();	// this.storiesService.getStoriesVariable();
 			this.mostLikedStories = this.storiesService.getMostLikedStoriesVariableChunk();	// this.storiesService.getMostLikedStoriesVariable();
 			if (this.selectedFilter == "Single Story") {
-				this.goToStory(this.storyId);
+				this.goToStory(this.story_id);
 			}
 		});
 	}
@@ -134,18 +137,20 @@ export class StoriesComponent implements OnInit {
   		let self = this;
 		function callback(writers) {
 	  		self.writers = writers;
+	  		console.log("Writers in stories component: ", writers);
 	  	}
 	  	if (this.writersService.getWritersVariable() == null) {
 	  		this.writersService.getWritersVariableViaCallback(callback);
 	  	} else {
 	  		this.writers = this.writersService.getWritersVariable();
+	  		console.log("Writers: ", this.writers);
 	  	}
   	}
 
-  	goToStory(storyId) {
-  		this.storyId = storyId;
-  		console.log("Requested to go to story with id:", storyId);
-  		this.storiesService.getOneStory(storyId).subscribe(data => {
+  	goToStory(story_id) {
+  		this.story_id = story_id;
+  		console.log("Requested to go to story with id:", story_id);
+  		this.storiesService.getOneStory(story_id).subscribe(data => {
 	        // console.log("Single story data from server: ", data);
 	        this.selectedFilter = "Single Story";
 	        this.singleStory = data;
@@ -153,8 +158,8 @@ export class StoriesComponent implements OnInit {
       	});
   	}
 
-  likeStory(storyId: string, storyIndex: number) {
-    console.log("Trying to like: ", storyId);
+  likeStory(story_id: string, story_index: number) {
+    console.log("Trying to like: ", story_id);
     if (!this.auth.getJwtToken()) {
     	return;
     }
@@ -164,11 +169,11 @@ export class StoriesComponent implements OnInit {
         'Authorization': this.auth.getJwtToken()
       })
     };
-    return this.http.get<storiesData>(this.serverUrl.concat("/stories/like/", storyId), httpOptions).subscribe(data => {
+    return this.http.get<storiesData>(this.serverUrl.concat("/stories/like/", story_id), httpOptions).subscribe(data => {
 		console.log("Data from server: ", data);
 		if (data.success) {
-			if (storyIndex) {
-				this.stories[storyIndex].likeStatus = !this.stories[storyIndex].likeStatus;
+			if (story_index) {
+				this.stories[story_index].likeStatus = !this.stories[story_index].likeStatus;
 			}
 			
 			this.storiesService.setStoriesVariableChunk(null);
@@ -190,6 +195,17 @@ export class StoriesComponent implements OnInit {
 
 			this.storiesService.sendMessage("Message from Stories Component!");
 		}
+	});
+  }
+
+  goToWriter(writer_id: string) {
+	this.writer_id = writer_id;
+	console.log("Requested to go to writer with id:", writer_id);
+	this.writersService.getOneWriter(writer_id).subscribe(data => {
+		// console.log("Single story data from server: ", data);
+		this.selectedFilter = "Single Writer";
+		this.singleWriter = data;
+		console.log("singleWriter: ", data);
 	});
   }
 
