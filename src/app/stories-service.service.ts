@@ -104,7 +104,7 @@ export class StoriesServiceService {
   }
 
   getOneStory(storyId) {
-    return this.http.get<storiesData[]>(this.serverUrl.concat("/stories/getOne/").concat(storyId), {});
+    return this.http.get<storiesData>(this.serverUrl.concat("/stories/getOne/").concat(storyId), {});
   }
 
   getStoriesVariable() {

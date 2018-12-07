@@ -2,17 +2,17 @@
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-export const environment = {
-  production: false,
-  baseUrl: "http://ec2-52-66-208-89.ap-south-1.compute.amazonaws.com",/*"http://ec2-35-154-80-242.ap-south-1.compute.amazonaws.com",*/
-  port: 3000
-};
-
 /*export const environment = {
+  production: false,
+  baseUrl: "http://ec2-52-66-208-89.ap-south-1.compute.amazonaws.com",
+  port: 3000
+};*/
+
+export const environment = {
   production: false,
   baseUrl: "http://localhost",
   port: 3000
-};*/
+};
 
 /*
  * In development mode, to ignore zone related error stack frames such as

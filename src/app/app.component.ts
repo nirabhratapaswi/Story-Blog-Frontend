@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 
-function functionDecorator(target, name, descriptor) {
+/*function functionDecorator(target, name, descriptor) {
 	console.log("Target:" , target, ", name:", name, ", descriptor: ", descriptor);
 	const original = descriptor.value;
 	descriptor.value = (...args) => {
@@ -10,7 +10,7 @@ function functionDecorator(target, name, descriptor) {
 		return result;
 	}
 	return descriptor;
-}
+}*/
 
 /*function classDecorator(className) {
 	console.log(className);
@@ -46,15 +46,7 @@ export class AppComponent {
     "upload": "Upload"
   };
 
-  constructor(private Auth: AuthService, private router: Router) {
-  	console.log(this.aSimpleMethod(5, 2));
-  }
-
-  @functionDecorator
-  aSimpleMethod(a, b) {
-  	console.log("Hello World!!");
-  	return a*b;
-  }
+  constructor(private Auth: AuthService, private router: Router) {}
 
   routerClick(page) {
   	console.log("Page: ", page);

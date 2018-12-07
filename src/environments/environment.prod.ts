@@ -1,5 +1,5 @@
 export const environment = {
-  production: true,
-  baseUrl: "http://ec2-35-154-80-242.ap-south-1.compute.amazonaws.com",
+  production: false,
+  baseUrl: "http://ec2-52-66-208-89.ap-south-1.compute.amazonaws.com",
   port: 3000
 };

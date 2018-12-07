@@ -119,7 +119,8 @@
         </h6>
       </mat-card-title>
       <mat-card-subtitle onmousedown='return false;' onselectstart='return false;'>Created On: <i>{{ singleStory.created_at }}</i></mat-card-subtitle>
-      <mat-card-content onmousedown='return false;' onselectstart='return false;' class="full_story">{{ singleStory.text }}</mat-card-content>
+      <!-- <mat-card-content onmousedown='return false;' onselectstart='return false;' class="full_story">{{ singleStory.text }}</mat-card-content> -->
+      <mat-card-content onmousedown='return false;' onselectstart='return false;' class="full_story"><div [innerHTML]="singleStory.text"></div></mat-card-content>
       <mat-card-footer onmousedown='return false;' onselectstart='return false;'>
         <mat-icon class="mat-icon-rtl-mirror" svgIcon="assets/images/favourite.svg"></mat-icon>
         <span *ngIf="singleStory.likeStatus">
