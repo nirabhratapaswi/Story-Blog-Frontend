@@ -1,0 +1,48 @@
+<mat-card class="login_card">
+  <mat-card-title><h3>Register</h3></mat-card-title>
+  <mat-card-content>
+    <form>
+      <table cellspacing="0">
+      	<tr>
+          <td>
+            <mat-form-field>
+              <input matInput placeholder="Name" [(ngModel)]="form_data.name" name="name" required>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <input matInput placeholder="Username" [(ngModel)]="form_data.username" name="username" required>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <input matInput placeholder="Email" [(ngModel)]="form_data.email" name="email" required>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <input matInput placeholder="Password" [(ngModel)]="form_data.password" type="password" name="password" required>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+          	<div class="password_warning">{{ password_warning }}</div>
+            <mat-form-field>
+              <input matInput placeholder="Verify Password" [(ngModel)]="password_verify" type="password" name="password_verify" required>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="registerUser()" color="primary">Login</button>
+  </mat-card-actions>
+</mat-card>

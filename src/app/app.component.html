@@ -4,9 +4,7 @@
 <!-- <my-nav></my-nav> -->
 <mat-toolbar color="primary" style="position: fixed; z-index: 1000; height: 50px;">
   <mat-toolbar-row>
-    <span><!-- <img src="./assets/logo.png"> --></span>
-    <!-- <span class="align-center"></span> -->
-    <span class="example-spacer"></span>
+    <span class="example-spacer">Welcome&nbsp;&nbsp;<i>{{ name }}</i></span>
     <button mat-button (click)="routerClick('')">
       <div *ngIf="selectedTab=='Home'">
         <u>Home</u>
@@ -31,6 +29,14 @@
         Login
       </div>
     </button>
+    <button *ngIf="!isLoggedIn()" mat-button (click)="routerClick('register')">
+      <div *ngIf="selectedTab=='Register'">
+        <u>Register</u>
+      </div>
+      <div *ngIf="selectedTab!='Register'">
+        Register
+      </div>
+    </button>
     <button *ngIf="isAdmin()" mat-button (click)="routerClick('upload')">
       <div *ngIf="selectedTab=='Upload'">
         <u>Upload</u>
@@ -49,8 +55,6 @@
       <button mat-menu-item (click)="logoutUser()">Logout</button>
       <button *ngIf="isAdmin()" mat-menu-item (click)="routerClick('admin')">Admin Panel</button>
     </mat-menu>
-    <!-- <button mat-button>About</button>
-    <button mat-button>Contact</button> -->
   </mat-toolbar-row>
 </mat-toolbar>
 <div style="padding-top: 70px;">

@@ -29,7 +29,7 @@ export class StoriesServiceService {
   serverUrl = environment.baseUrl.concat(":", environment.port.toString());
 	message: any;
   subscription: Subscription;
-  selfMessage: String = "Personal Message for storiesService.";
+  self_message: String = "Personal Message for storiesService.";
 
   constructor(private http: HttpClient, private auth: AuthService) {
   	console.log("Stories Service constructor called...");
@@ -37,7 +37,7 @@ export class StoriesServiceService {
   	this.subscription = this.getMessage().subscribe(message => {
   		console.log("Message recieved by stories-service: ", message);
   		this.message = message;
-  		if (message.text == this.selfMessage || message.text == this.selfMessage.toString()) {
+  		if (message.text == this.self_message || message.text == this.self_message.toString()) {
   			//
   		} else {
   			this.getStories();
@@ -46,7 +46,7 @@ export class StoriesServiceService {
   	});
   }
 
- sendMessage(message: String) {
+  sendMessage(message: String) {
       this.subject.next({ text: message });
   }
  
@@ -65,7 +65,7 @@ export class StoriesServiceService {
         data[i].likeStatus = false;
       }
       this.stories = data;
-      this.sendMessage(this.selfMessage);
+      this.sendMessage(this.self_message);
     });
   }
 
@@ -76,7 +76,7 @@ export class StoriesServiceService {
 	  			data[i].likeStatus = false;
 	  		}
 	  		this.stories = data;
-	  		this.sendMessage(this.selfMessage);
+	  		this.sendMessage(this.self_message);
 	  	});
   }
 
@@ -87,7 +87,7 @@ export class StoriesServiceService {
           data[i].likeStatus = false;
         }
         this.mostLikedStories = data;
-        this.sendMessage(this.selfMessage);
+        this.sendMessage(this.self_message);
       });
   }
 

@@ -1,33 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
-
-/*function functionDecorator(target, name, descriptor) {
-	console.log("Target:" , target, ", name:", name, ", descriptor: ", descriptor);
-	const original = descriptor.value;
-	descriptor.value = (...args) => {
-		const result = original.apply(this, args); // see strict and non-strict modes
-		return result;
-	}
-	return descriptor;
-}*/
-
-/*function classDecorator(className) {
-	console.log(className);
-	return (...args) => {
-		console.log("Arguments passed to this class's constructor are: ", args);
-		return new className(...args);
-	}
-}
-
-@classDecorator
-class myClass {
-	constructor(arg1, arg2, arg3) {
-		console.log("myClass constuctor called.");
-	}
-}
-
-const myClassObj = new myClass(1, 2, 3);*/
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -43,10 +17,26 @@ export class AppComponent {
     "": "Home",
     "stories": "Stories",
     "login": "Login",
-    "upload": "Upload"
+    "upload": "Upload",
+    "register": "Register",
   };
+  name: string = "";
+  subscription: Subscription;
 
-  constructor(private Auth: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {
+    this.subscription = this.authService.getMessage().subscribe(message => {
+      console.log("Message recieved by appComponent: ", message);
+      if (message.data && message.data.name) {
+        this.name = message.data.name;
+      }
+      /*this.message = message;
+      this.stories = this.storiesService.getStoriesVariableChunk();  // this.storiesService.getStoriesVariable();
+      this.mostLikedStories = this.storiesService.getMostLikedStoriesVariableChunk();  // this.storiesService.getMostLikedStoriesVariable();
+      if (this.selectedFilter == "Single Story") {
+        this.goToStory(this.story_id);
+      }*/
+    });
+  }
 
   routerClick(page) {
   	console.log("Page: ", page);
@@ -55,22 +45,22 @@ export class AppComponent {
   }
 
   isAdmin() {
-  	return this.Auth.getAdminStatus();
+  	return this.authService.getAdminStatus();
   }
 
   isLoggedIn() {
-  	return this.Auth.isLoggedIn;
+  	return this.authService.isLoggedIn;
   }
 
   logoutUser() {
-  	this.Auth.logout().subscribe(data => {
+  	this.authService.logout().subscribe(data => {
   		if (data.success) {
   			console.log("Logout successful!!");
-  			this.router.navigate([""]);
-  			this.Auth.setLoggedIn(false);
+  			this.authService.setLoggedIn(false);
   		} else {
   			console.log("Logout failed");
   		}
+      this.router.navigate([""]);
   		console.log("Data: ", data, ' recieved from the server.');
   	});
   }

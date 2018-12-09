@@ -40,19 +40,19 @@ export class AdminComponent implements OnInit, OnDestroy {
     columns: {
       authors: {
         title: 'Authors',
-        filter: false
+        filter: true
       },
       title: {
         title: 'Title',
-        filter: false
+        filter: true
       },
       likes: {
         title: 'Likes',
-        filter: false
+        filter: true
       },
       created_at: {
         title: 'Created At',
-        filter: false
+        filter: true
       }
     },
     mode: "inline",

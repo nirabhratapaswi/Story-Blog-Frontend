@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../environments/environment';
+import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { CookieService } from 'ngx-cookie-service';
 
 interface myData {
   success: boolean,
@@ -27,8 +32,53 @@ export class AuthService {
     username: "",
     id: ""
   };
+  private subject = new Subject<any>();
+  subscription: Subscription;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private cookieService: CookieService, private router: Router) {
+    if (this.cookieService.check("jwt-authentication")) {
+      this.confirmUser(this.cookieService.get("jwt-authentication"), (data: myData) => {
+        if (!data || !data.success) {
+        } else if (data.success) {
+          this.jwtToken = this.cookieService.get("jwt-authentication");
+          this.isAdmin = data.admin;
+          this.loggedInStatus = true;
+          this.sendMessage("User is logged in.", data);
+          this.router.navigate(["stories"]);
+        }
+      });
+    }
+    this.subscription = this.getMessage().subscribe(message => {
+      console.log("Message recieved by authService: ", message);
+    });
+  }
+
+  getMessage(): Observable<any> {
+      return this.subject.asObservable();
+  }
+
+  sendMessage(message: String, data: any) {
+      this.subject.next({ text: message, data: data });
+  }
+ 
+  clearMessage() {
+      this.subject.next();
+  }
+
+  confirmUser(jwtToken: string, callback) {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type':  'application/json',
+        'Authorization': jwtToken
+      })
+    };
+    let response = this.http.get<myData>(this.serverUrl.concat("/is_logged_in"), httpOptions);
+    response.subscribe(data => {
+      console.log("Returned data: ", data);
+      callback(data);
+    });
+  }
 
   setLoggedIn(loggedInStatus: boolean) {
     this.loggedInStatus = loggedInStatus;
@@ -89,6 +139,7 @@ export class AuthService {
     this.loggedInStatus = false;
     this.isAdmin = false;
     this.jwtToken = null;
+    this.cookieService.delete("jwt-authentication");
     return this.http.post<myData>(this.serverUrl.concat("/login/logout"), {});
   }
 
