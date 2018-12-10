@@ -46,3 +46,7 @@ table {
 .warning {
   color: red;
 }
+
+.processing_request {
+  color: green;
+}

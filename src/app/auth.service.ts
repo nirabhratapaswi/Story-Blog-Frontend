@@ -15,7 +15,9 @@ interface myData {
   jwt: string,
   name: String,
   username: String,
-  id: String
+  id: String,
+  email: String,
+  email_not_confirmed: boolean
 }
 
 @Injectable({
@@ -42,6 +44,9 @@ export class AuthService {
         } else if (data.success) {
           this.jwtToken = this.cookieService.get("jwt-authentication");
           this.isAdmin = data.admin;
+          this.userData.name = data.name;
+          this.userData.username = data.username;
+          this.userData.id = data.id;
           this.loggedInStatus = true;
           this.sendMessage("User is logged in.", data);
           this.router.navigate(["stories"]);
@@ -141,6 +146,17 @@ export class AuthService {
     this.jwtToken = null;
     this.cookieService.delete("jwt-authentication");
     return this.http.post<myData>(this.serverUrl.concat("/login/logout"), {});
+  }
+
+  deleteUser() {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type':  'application/json',
+        'Authorization': this.jwtToken
+      })
+    };
+    return this.http.get<myData>(this.serverUrl.concat("/users/delete/", this.userData.id), httpOptions);
   }
 
 }

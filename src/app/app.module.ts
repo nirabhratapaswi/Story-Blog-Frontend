@@ -24,6 +24,7 @@ import { RegisterComponent } from './register/register.component';
 import { RegisterService } from './register.service';
 import { AppRoutingModule } from './app-routing.module';
 import { CookieService } from 'ngx-cookie-service';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { CookieService } from 'ngx-cookie-service';
     AdminComponent,
     UploadComponent,
     ProfileComponent,
-    RegisterComponent
+    RegisterComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,

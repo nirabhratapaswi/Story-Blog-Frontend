@@ -12,13 +12,14 @@ import { Subscription } from 'rxjs';
 export class AppComponent {
   title = 'app';
   inputVal = 'hello';
-  selectedTab: String = "";
+  selected_tab: String = "";
   selectedTabMap: any = {
     "": "Home",
     "stories": "Stories",
     "login": "Login",
     "upload": "Upload",
     "register": "Register",
+    "admin": "Admin",
   };
   name: string = "";
   subscription: Subscription;
@@ -40,7 +41,7 @@ export class AppComponent {
 
   routerClick(page) {
   	console.log("Page: ", page);
-    this.selectedTab = this.selectedTabMap[page];
+    this.selected_tab = this.selectedTabMap[page];
   	this.router.navigateByUrl('/'.concat(page));
   }
 
@@ -50,6 +51,14 @@ export class AppComponent {
 
   isLoggedIn() {
   	return this.authService.isLoggedIn;
+  }
+
+  setSelectedTab(selected_tab: string) {
+    this.selected_tab = selected_tab;
+  }
+
+  setName(name: string) {
+    this.name = name;
   }
 
   logoutUser() {

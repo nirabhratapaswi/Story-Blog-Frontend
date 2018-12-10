@@ -6,42 +6,42 @@
   <mat-toolbar-row>
     <span class="example-spacer">Welcome&nbsp;&nbsp;<i>{{ name }}</i></span>
     <button mat-button (click)="routerClick('')">
-      <div *ngIf="selectedTab=='Home'">
+      <div *ngIf="selected_tab=='Home'">
         <u>Home</u>
       </div>
-      <div *ngIf="selectedTab!='Home'">
+      <div *ngIf="selected_tab!='Home'">
         Home
       </div>
     </button>
     <button mat-button (click)="routerClick('stories')">
-      <div *ngIf="selectedTab=='Stories'">
+      <div *ngIf="selected_tab=='Stories'">
         <u>Stories</u>
       </div>
-      <div *ngIf="selectedTab!='Stories'">
+      <div *ngIf="selected_tab!='Stories'">
         Stories
       </div>
     </button>
     <button *ngIf="!isLoggedIn()" mat-button (click)="routerClick('login')">
-      <div *ngIf="selectedTab=='Login'">
+      <div *ngIf="selected_tab=='Login'">
         <u>Login</u>
       </div>
-      <div *ngIf="selectedTab!='Login'">
+      <div *ngIf="selected_tab!='Login'">
         Login
       </div>
     </button>
     <button *ngIf="!isLoggedIn()" mat-button (click)="routerClick('register')">
-      <div *ngIf="selectedTab=='Register'">
+      <div *ngIf="selected_tab=='Register'">
         <u>Register</u>
       </div>
-      <div *ngIf="selectedTab!='Register'">
+      <div *ngIf="selected_tab!='Register'">
         Register
       </div>
     </button>
     <button *ngIf="isAdmin()" mat-button (click)="routerClick('upload')">
-      <div *ngIf="selectedTab=='Upload'">
+      <div *ngIf="selected_tab=='Upload'">
         <u>Upload</u>
       </div>
-      <div *ngIf="selectedTab!='Upload'">
+      <div *ngIf="selected_tab!='Upload'">
         Upload
       </div>
     </button>
@@ -54,6 +54,7 @@
       <button mat-menu-item (click)="routerClick('profile')">Profile</button>
       <button mat-menu-item (click)="logoutUser()">Logout</button>
       <button *ngIf="isAdmin()" mat-menu-item (click)="routerClick('admin')">Admin Panel</button>
+      <button mat-menu-item (click)="routerClick('settings')">Settings</button>
     </mat-menu>
   </mat-toolbar-row>
 </mat-toolbar>

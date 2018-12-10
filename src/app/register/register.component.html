@@ -5,6 +5,7 @@
       <table cellspacing="0">
       	<tr>
           <td>
+            <div class="warning">{{ warning }}</div>
             <mat-form-field>
               <input matInput placeholder="Name" [(ngModel)]="form_data.name" name="name" required>
             </mat-form-field>
@@ -43,6 +44,10 @@
     </form>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button (click)="registerUser()" color="primary">Login</button>
+    <button mat-raised-button (click)="registerUser()" color="primary" [disabled]="submit_disabled">Register</button>
   </mat-card-actions>
 </mat-card>
+
+<div>
+  <h3 class="processing_request" [innerHTML]="message"></h3>  
+</div>

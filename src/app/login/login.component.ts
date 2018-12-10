@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-login',
@@ -10,7 +11,7 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private Auth: AuthService, private router: Router, private cookieService: CookieService) {}
+  constructor(private Auth: AuthService, private router: Router, private cookieService: CookieService, private appComponent: AppComponent) {}
 
   username : string;
   password : string;
@@ -31,14 +32,17 @@ export class LoginComponent implements OnInit {
           id: data.id
         });
         if (data.admin) {
-          this.router.navigate(["admin"]);
+          this.appComponent.routerClick("admin");
         } else {
-          this.router.navigate(["stories"]);
+          this.appComponent.routerClick("stories");
         }
       } else {
         console.log("Login failed");
         this.Auth.setLoggedIn(false);
         this.warning = "incorrect username / password";
+        if (data.email_not_confirmed) {
+          this.warning = "Confirm your email before attempting login.";
+        }
       }
       console.log("Data: ", data, ' recieved from the server.');
     });

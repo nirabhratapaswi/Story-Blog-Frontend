@@ -5,12 +5,7 @@ import { environment } from '../environments/environment';
 interface myData {
 	success: boolean,
 	msg: String,
-	data: String,
-	admin: Boolean,
-	jwt: string,
-	name: String,
-	username: String,
-	id: String
+	key_exists: boolean
 }
 
 interface registerData {
