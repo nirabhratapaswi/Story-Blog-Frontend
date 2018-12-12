@@ -105,6 +105,7 @@ export class AuthService {
     this.userData.name = data.name;
     this.userData.username = data.username;
     this.userData.id = data.id;
+    this.sendMessage("User is logged in.", data);
     console.log("Setting user data from: ", data, ", to: ", this.userData);
   }
 
@@ -145,6 +146,9 @@ export class AuthService {
     this.isAdmin = false;
     this.jwtToken = null;
     this.cookieService.delete("jwt-authentication");
+    this.sendMessage("User is logged out.", {
+      name: ""
+    });
     return this.http.post<myData>(this.serverUrl.concat("/login/logout"), {});
   }
 

@@ -96,6 +96,9 @@ export class AdminComponent implements OnInit, OnDestroy {
       console.log("Message recieved by Admin Component: ", message);
       this.message = message;
       this.stories = this.storiesService.getStoriesVariable();
+      for (let i=0; i<this.stories.length; i++) {
+        this.stories[i].likes = this.stories[i].likes.length;
+      }
     });
   }
 
@@ -104,6 +107,9 @@ export class AdminComponent implements OnInit, OnDestroy {
     let self = this;
       function callback(stories) {
         self.stories = stories;
+        for (let i=0; i<self.stories.length; i++) {
+          self.stories[i].likes = self.stories[i].likes.length;
+        }
         self.source.load(self.stories);
         self.source.refresh();
         console.log("Stories: ", self.stories);
@@ -112,6 +118,9 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.storiesService.getStoriesVariableViaCallback(callback);
       } else {
         this.stories = this.storiesService.getStoriesVariable();
+        for (let i=0; i<this.stories.length; i++) {
+          this.stories[i].likes = this.stories[i].likes.length;
+        }
         self.source.load(this.stories);
         self.source.refresh();
         console.log("Stories: ", this.stories);

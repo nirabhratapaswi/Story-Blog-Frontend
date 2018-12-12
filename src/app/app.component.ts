@@ -27,15 +27,9 @@ export class AppComponent {
   constructor(private authService: AuthService, private router: Router) {
     this.subscription = this.authService.getMessage().subscribe(message => {
       console.log("Message recieved by appComponent: ", message);
-      if (message.data && message.data.name) {
+      if ((message.data != undefined || message.data != null) && (message.data.name != undefined || message.data.name != null)) {
         this.name = message.data.name;
       }
-      /*this.message = message;
-      this.stories = this.storiesService.getStoriesVariableChunk();  // this.storiesService.getStoriesVariable();
-      this.mostLikedStories = this.storiesService.getMostLikedStoriesVariableChunk();  // this.storiesService.getMostLikedStoriesVariable();
-      if (this.selectedFilter == "Single Story") {
-        this.goToStory(this.story_id);
-      }*/
     });
   }
 
