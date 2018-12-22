@@ -60,7 +60,7 @@
   <mat-toolbar-row>
       <span *ngIf="name != ''" class="example-spacer">Welcome</span>
       <span *ngIf="name == ''" class="example-spacer"></span>
-      <button *ngIf="isLoggedIn()" mat-button [matMenuTriggerFor]="menu">
+      <button mat-button [matMenuTriggerFor]="menu">
         <span>
           <button type="button" color="primary-grey" mat-icon-button><mat-icon>menu</mat-icon></button>
         </span>
