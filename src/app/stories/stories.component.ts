@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../auth.service';
@@ -42,6 +42,64 @@ export class StoriesComponent implements OnInit {
   	private mostLikedOffset: number;
   	private mostLikedChunkSize: number;
   	serverUrl = environment.baseUrl.concat(":", environment.port.toString());
+  	screen_columns: number = 3;
+  	detect_mobile: boolean = false;
+  	image_dimensions: any = {
+  		width: '90%',
+  		height: '30%',
+  		padding_left: '2px',
+  		padding_top: '15px'
+  	};
+  	row_height: string = "1:1";
+
+  	getHeight(percentage: number) {
+  		return (window.innerHeight * percentage / 100).toString() + "px";
+  	}
+
+  	getWidth(percentage: number) {
+  		return (window.innerWidth * percentage / 100).toString() + "px";
+  	}
+
+  	onResize(event) {
+  		if (window.innerWidth <= 600) {
+  			this.screen_columns = 1;
+  			this.detect_mobile = true;
+  			this.image_dimensions = {
+		  		width: '120px',
+		  		height: '120px',
+		  		padding_left: '2px',
+		  		padding_top: '0px'
+		  	};
+		  	// this.row_height = "1:1";
+		  	this.row_height = "350px";
+		  	// this.row_height = this.getHeight(40);
+  		}
+  		else if (window.innerWidth < 1000) {
+  			this.screen_columns = 2;
+  			this.detect_mobile = false;
+  			this.image_dimensions = {
+		  		width: '90%',
+		  		height: '25%',
+		  		padding_left: '1px',
+		  		padding_top: '15px'
+		  	};
+		  	// this.row_height = "2:1";
+		  	this.row_height = "350px";
+		  	// this.row_height = this.getHeight(30);
+  		} else {
+  			this.screen_columns = 3;
+  			this.detect_mobile = false;
+  			this.image_dimensions = {
+		  		width: '90%',
+		  		height: '30%',
+		  		padding_left: '2px',
+		  		padding_top: '15px'
+		  	};
+		  	// this.row_height = "1:1";
+		  	this.row_height = "350px";
+		  	// this.row_height = this.getHeight(30);
+  		}
+  	}
 
 	constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService, private writersService: WritersService) {
 		this.stories = this.storiesService.getStoriesVariableChunk();
@@ -71,6 +129,13 @@ export class StoriesComponent implements OnInit {
 				this.goToStory(this.story_id);
 			}
 		});
+
+		/*window.onresize = function() {
+			if (window.innerWidth < 768) {
+	  			this. = 1;
+	  		}
+		};*/
+		this.onResize(null);
 	}
 
 	ngOnInit() {}

@@ -23,6 +23,15 @@ export class AppComponent {
   };
   name: string = "";
   subscription: Subscription;
+  detect_mobile: boolean = false;
+
+  onResize(event) {
+    if (window.innerWidth <= 600) {
+      this.detect_mobile = true;
+    } else {
+      this.detect_mobile = false;
+    }
+   }
 
   constructor(private authService: AuthService, private router: Router) {
     this.subscription = this.authService.getMessage().subscribe(message => {
@@ -31,6 +40,8 @@ export class AppComponent {
         this.name = message.data.name;
       }
     });
+
+    this.onResize(null);
   }
 
   routerClick(page) {

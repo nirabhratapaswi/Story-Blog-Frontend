@@ -1,9 +1,9 @@
-<div class="parentClass">
+<div class="parentClass" (window:resize)="onResize($event)">
   <div class="left" *ngIf="selectedFilter==filters[0]">
-    <mat-grid-list cols="3" rowHeight="1:1">
+    <mat-grid-list cols="{{ screen_columns }}" rowHeight="{{ row_height }}">
       <div *ngFor="let story of stories; let storyIndex = index;" style="width: auto;">
         <!-- <br> -->
-        <mat-grid-tile style="width: 90%;">
+        <mat-grid-tile>
           <mat-card class="story_card" style="width: 90%;">
             <mat-card-title class="center" (click)="goToStory(story._id)">
               <h2 class="pointer">{{ story.title }}</h2>
@@ -43,10 +43,10 @@
     <br>
   </div>
   <div class="left" *ngIf="selectedFilter==filters[1]">
-      <mat-grid-list cols="3" rowHeight="1:1">
+      <mat-grid-list cols="{{ screen_columns }}" rowHeight="{{ row_height }}">
         <div *ngFor="let story of mostLikedStories; let storyIndex = index;" style="width: auto;">
           <!-- <br> -->
-          <mat-grid-tile style="width: 90%;">
+          <mat-grid-tile>
             <mat-card class="story_card" style="width: 90%;">
               <mat-card-title class="center" (click)="goToStory(story._id)">
                 <h2 class="pointer">{{ story.title }}</h2>
@@ -86,10 +86,10 @@
     <br>
   </div>
   <div class="left" *ngIf="selectedFilter==filters[2]">
-    <mat-grid-list cols="3" rowHeight="1:1">
+    <mat-grid-list cols="{{ screen_columns }}" rowHeight="{{ row_height }}">
       <div *ngFor="let writer of writers; let writerIndex = index;" style="width: auto;">
         <!-- <br> -->
-        <mat-grid-tile style="width: 90%;">
+        <mat-grid-tile>
           <mat-card class="story_card" style="width: 90%;">
             <mat-card-title class="center" (click)="goToWriter(writer._id)">
               <h2 class="pointer">{{ writer.name }}</h2>
@@ -155,12 +155,14 @@
   </div>
   <br>
   <div class="right">
-    <h2 style="text-align: center;">Filter:</h2>
+    <h2 style="text-align: center;" *ngIf="!detect_mobile">Filter:</h2>
     <mat-radio-group class="radio-group" [(ngModel)]="selectedFilter">
-      <mat-radio-button class="radio-button" *ngFor="let filter of filters" [value]="filter">
+      <mat-radio-button class="radio-button" *ngFor="let filter of filters" [value]="filter" [ngStyle]="{'display':'inline-block'}">
         {{filter}}
       </mat-radio-button>
     </mat-radio-group>
-    <img src="assets/images/banner.jpg" alt="Banner for Site" style="width: 90%; height: 30%; padding-left: 2px; padding-top: 15px;">
+    <div class="image">
+      <img src="assets/images/banner.jpg" alt="Banner for Site" [ngStyle]="{'width': image_dimensions.width, 'height': image_dimensions.height, 'padding-left': image_dimensions.padding_left, 'padding-top': image_dimensions.padding_top, 'float': 'right'}">
+    </div>
   </div>
 </div>

@@ -1,63 +1,119 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<!-- <input [(ngModel)]="inputVal"> -->
-<!-- <app-hello><//app-hello> -->
-<!-- <my-nav></my-nav> -->
-<mat-toolbar color="primary" style="position: fixed; z-index: 1000; height: 50px;">
+<mat-toolbar *ngIf="!detect_mobile" color="primary" style="position: fixed; z-index: 1000; height: 50px;" (window:resize)="onResize($event)">
   <mat-toolbar-row>
-    <span class="example-spacer">Welcome&nbsp;&nbsp;<i>{{ name }}</i></span>
-    <button mat-button (click)="routerClick('')">
-      <div *ngIf="selected_tab=='Home'">
-        <u>Home</u>
-      </div>
-      <div *ngIf="selected_tab!='Home'">
-        Home
-      </div>
-    </button>
-    <button mat-button (click)="routerClick('stories')">
-      <div *ngIf="selected_tab=='Stories'">
-        <u>Stories</u>
-      </div>
-      <div *ngIf="selected_tab!='Stories'">
-        Stories
-      </div>
-    </button>
-    <button *ngIf="!isLoggedIn()" mat-button (click)="routerClick('login')">
-      <div *ngIf="selected_tab=='Login'">
-        <u>Login</u>
-      </div>
-      <div *ngIf="selected_tab!='Login'">
-        Login
-      </div>
-    </button>
-    <button *ngIf="!isLoggedIn()" mat-button (click)="routerClick('register')">
-      <div *ngIf="selected_tab=='Register'">
-        <u>Register</u>
-      </div>
-      <div *ngIf="selected_tab!='Register'">
-        Register
-      </div>
-    </button>
-    <button *ngIf="isAdmin()" mat-button (click)="routerClick('upload')">
-      <div *ngIf="selected_tab=='Upload'">
-        <u>Upload</u>
-      </div>
-      <div *ngIf="selected_tab!='Upload'">
-        Upload
-      </div>
-    </button>
-    <button *ngIf="isLoggedIn()" mat-button [matMenuTriggerFor]="menu">
-      <span>
-      <button type="button" color="primary-grey" mat-icon-button><mat-icon>account_circle</mat-icon></button>
-    </span>
-    </button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="routerClick('profile')">Profile</button>
-      <button mat-menu-item (click)="logoutUser()">Logout</button>
-      <button *ngIf="isAdmin()" mat-menu-item (click)="routerClick('admin')">Admin Panel</button>
-      <button mat-menu-item (click)="routerClick('settings')">Settings</button>
-    </mat-menu>
+      <span *ngIf="name != ''" class="example-spacer">Welcome&nbsp;&nbsp;<i>{{ name }}</i></span>
+      <span *ngIf="name == ''" class="example-spacer"></span>
+      <button mat-button (click)="routerClick('')">
+        <div *ngIf="selected_tab=='Home'">
+          <u>Home</u>
+        </div>
+        <div *ngIf="selected_tab!='Home'">
+          Home
+        </div>
+      </button>
+      <button mat-button (click)="routerClick('stories')">
+        <div *ngIf="selected_tab=='Stories'">
+          <u>Stories</u>
+        </div>
+        <div *ngIf="selected_tab!='Stories'">
+          Stories
+        </div>
+      </button>
+      <button *ngIf="!isLoggedIn()" mat-button (click)="routerClick('login')">
+        <div *ngIf="selected_tab=='Login'">
+          <u>Login</u>
+        </div>
+        <div *ngIf="selected_tab!='Login'">
+          Login
+        </div>
+      </button>
+      <button *ngIf="!isLoggedIn()" mat-button (click)="routerClick('register')">
+        <div *ngIf="selected_tab=='Register'">
+          <u>Register</u>
+        </div>
+        <div *ngIf="selected_tab!='Register'">
+          Register
+        </div>
+      </button>
+      <button *ngIf="isAdmin()" mat-button (click)="routerClick('upload')">
+        <div *ngIf="selected_tab=='Upload'">
+          <u>Upload</u>
+        </div>
+        <div *ngIf="selected_tab!='Upload'">
+          Upload
+        </div>
+      </button>
+      <button *ngIf="isLoggedIn()" mat-button [matMenuTriggerFor]="menu">
+        <span>
+          <button type="button" color="primary-grey" mat-icon-button><mat-icon>account_circle</mat-icon></button>
+        </span>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="routerClick('profile')">Profile</button>
+        <button mat-menu-item (click)="logoutUser()">Logout</button>
+        <button *ngIf="isAdmin()" mat-menu-item (click)="routerClick('admin')">Admin Panel</button>
+        <button mat-menu-item (click)="routerClick('settings')">Settings</button>
+      </mat-menu>
   </mat-toolbar-row>
 </mat-toolbar>
+
+<mat-toolbar *ngIf="detect_mobile" color="primary" style="position: fixed; z-index: 1000; height: 50px;" (window:resize)="onResize($event)">
+  <mat-toolbar-row>
+      <span *ngIf="name != ''" class="example-spacer">Welcome</span>
+      <span *ngIf="name == ''" class="example-spacer"></span>
+      <button *ngIf="isLoggedIn()" mat-button [matMenuTriggerFor]="menu">
+        <span>
+          <button type="button" color="primary-grey" mat-icon-button><mat-icon>menu</mat-icon></button>
+        </span>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-button (click)="routerClick('')">
+          <div *ngIf="selected_tab=='Home'">
+            <u>Home</u>
+          </div>
+          <div *ngIf="selected_tab!='Home'">
+            Home
+          </div>
+        </button>
+        <button mat-button (click)="routerClick('stories')">
+          <div *ngIf="selected_tab=='Stories'">
+            <u>Stories</u>
+          </div>
+          <div *ngIf="selected_tab!='Stories'">
+            Stories
+          </div>
+        </button>
+        <button *ngIf="!isLoggedIn()" mat-button (click)="routerClick('login')">
+          <div *ngIf="selected_tab=='Login'">
+            <u>Login</u>
+          </div>
+          <div *ngIf="selected_tab!='Login'">
+            Login
+          </div>
+        </button>
+        <button *ngIf="!isLoggedIn()" mat-button (click)="routerClick('register')">
+          <div *ngIf="selected_tab=='Register'">
+            <u>Register</u>
+          </div>
+          <div *ngIf="selected_tab!='Register'">
+            Register
+          </div>
+        </button>
+        <button *ngIf="isAdmin()" mat-button (click)="routerClick('upload')">
+          <div *ngIf="selected_tab=='Upload'">
+            <u>Upload</u>
+          </div>
+          <div *ngIf="selected_tab!='Upload'">
+            Upload
+          </div>
+        </button>
+        <button mat-menu-item (click)="routerClick('profile')">Profile</button>
+        <button mat-menu-item (click)="logoutUser()">Logout</button>
+        <button *ngIf="isAdmin()" mat-menu-item (click)="routerClick('admin')">Admin Panel</button>
+        <button mat-menu-item (click)="routerClick('settings')">Settings</button>
+      </mat-menu>
+  </mat-toolbar-row>
+</mat-toolbar>
+
 <div style="padding-top: 70px;">
   <router-outlet></router-outlet>
 </div>

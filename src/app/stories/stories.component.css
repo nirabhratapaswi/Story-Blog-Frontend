@@ -1,3 +1,8 @@
+.parentClass {
+  top: 25px;
+  width: 100%;
+}
+
 .story_card {
   margin: auto;
   max-width: 90%;
@@ -14,6 +19,10 @@
   max-width: 95%;
   max-height: 100%;
   /*padding: 1%;*/
+}
+
+.mat-grid-tile {
+  width: 90%;
 }
 
 .mat-card-title {
@@ -73,18 +82,14 @@
  
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: grey; 
+    background: grey;
     border-radius: 10px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: #b30000; 
-}
-
-.parentClass {
-  width: 100%;
-}
+    background: #b30000;
+} 
 
 .left {
   width: 80%;
@@ -101,6 +106,10 @@
   border-left-color: black;
 }
 
+.image {
+  position: relative;
+}
+
 .pointer {cursor: pointer;}
 
 .radio-group {
@@ -110,9 +119,64 @@
 }
 
 .radio-button {
-  margin: 5px;
+  margin: 1px;
 }
 
 .example-selected-value {
   margin: 15px 0;
+}
+
+@media only screen and (max-width: 600px) {
+  /* For mobile phones: */
+  [class*="col-"] {
+    width: 100%;
+  }
+
+  .left {
+    margin-left: 5%;
+    width: 90%;
+    margin-top: 220px;
+    overflow-y: auto;
+  }
+
+  .right {
+    width: 100%;
+    top: 50px;
+    left: 0%;
+    height: 150px;
+    position: fixed;
+    border-left: none;
+    border-bottom: solid;
+    border-bottom-width: 0.5%;
+    border-bottom-color: black;
+    background: white;
+    z-index: 0;
+    display: flex;
+    padding-top: 50px;
+  }
+
+  .story_card {
+    margin: 0px;
+    max-width: 90%;
+    max-height: 530px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #000000;
+    overflow-y: auto;
+  }
+
+  .image {
+    position: fixed;
+    margin-top: -20px;
+    right: 20px;
+  }
+
+}
+
+@media only screen and (min-width: 600px) {
+  /* For tablets: */
+}
+
+@media only screen and (min-width: 900px) {
+  /* For desktop: */
 }
