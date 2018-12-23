@@ -11,22 +11,26 @@ import { AppComponent } from '../app.component';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private Auth: AuthService, private router: Router, private cookieService: CookieService, private appComponent: AppComponent) {}
+  constructor(private authService: AuthService, private router: Router, private cookieService: CookieService, private appComponent: AppComponent) {}
+
+  ngOnInit() {}
 
   username : string;
   password : string;
   warning: string = "";
+  message: string = null;
 
   login() : void {
-    this.Auth.getUserDetails(this.username, this.password).subscribe(data => {
+    this.message = null;
+    this.authService.getUserDetails(this.username, this.password).subscribe(data => {
       if (data.success) {
         console.log("Login successful!!");
-        this.Auth.setLoggedIn(true);
-        this.Auth.setJwtToken(data.jwt);
-        this.Auth.setAdminStatus(data.admin);
+        this.authService.setLoggedIn(true);
+        this.authService.setJwtToken(data.jwt);
+        this.authService.setAdminStatus(data.admin);
         this.cookieService.set("jwt-authentication", data.jwt);
         console.log("Sending data to setUserData after login...");
-        this.Auth.setUserData({
+        this.authService.setUserData({
           name: data.name,
           username:data.username,
           id: data.id
@@ -38,7 +42,7 @@ export class LoginComponent implements OnInit {
         }
       } else {
         console.log("Login failed");
-        this.Auth.setLoggedIn(false);
+        this.authService.setLoggedIn(false);
         this.warning = "incorrect username / password";
         if (data.email_not_confirmed) {
           this.warning = "Confirm your email before attempting login.";
@@ -47,23 +51,48 @@ export class LoginComponent implements OnInit {
       console.log("Data: ", data, ' recieved from the server.');
     });
   }
-
-  ngOnInit() {
-
-  }
   
   logoutUser(event) {
+    this.message = null;
   	event.preventDefault();
-  	this.Auth.logout().subscribe(data => {
+  	this.authService.logout().subscribe(data => {
   		if (data.success) {
   			console.log("Logout successful!!");
   			this.router.navigate([""]);
-  			this.Auth.setLoggedIn(false);
+  			this.authService.setLoggedIn(false);
   		} else {
   			console.log("Logout failed");
   		}
   		console.log("Data: ", data, ' recieved from the server.');
   	});
+  }
+
+  validateEmail(mail: string) {
+   if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+      return true;
+    }
+    return false;
+  }
+
+  changePassword() {
+    if (this.username == "" || this.username == null || !this.validateEmail(this.username)) {
+      this.warning = "Please enter the associated email id!";
+      return;
+    }
+    this.authService.forgotPassword(this.username).subscribe(data => {
+      console.log("Data: ", data);
+      if (!data.success) {
+        if (data.message == null || data.message == "" || data.message == undefined) {
+          data.message = "Something wrong with server, try again later.";
+        }
+        this.warning = data.message.toString();
+        this.message = null;
+        return;
+      }
+
+      this.warning = null;
+      this.message = "Mail with new password sent, login and update password.";
+    });
   }
 
 }

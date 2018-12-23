@@ -20,6 +20,13 @@ interface myData {
   email_not_confirmed: boolean
 }
 
+interface changePassword {
+  success: boolean,
+  msg: String,
+  new_password: string,
+  message: String
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -150,6 +157,24 @@ export class AuthService {
       name: ""
     });
     return this.http.post<myData>(this.serverUrl.concat("/login/logout"), {});
+  }
+
+  changePassword(old_password: string, password: string) {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type':  'application/json',
+        'Authorization': this.jwtToken
+      })
+    };
+    return this.http.post<changePassword>(this.serverUrl.concat("/users/change_password"), {
+      old_password: old_password,
+      password: password
+    }, httpOptions);
+  }
+
+  forgotPassword(email: string) {
+    return this.http.get<changePassword>(this.serverUrl.concat("/users/change_password?email=", email), {});
   }
 
   deleteUser() {

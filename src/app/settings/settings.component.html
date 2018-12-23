@@ -1,1 +1,40 @@
 <button class="text-center" mat-raised-button color="primary" (click)="deleteUser()">Delete Account</button>
+
+<mat-card class="login_card">
+  <mat-card-title><h3>Reset Password</h3></mat-card-title>
+  <mat-card-content>
+    <form>
+      <table cellspacing="0">
+        <tr>
+          <td>
+          	<div class="success_message">{{ success_message }}</div>
+            <div class="warning">{{ warning }}</div>
+            <mat-form-field>
+              <input matInput placeholder="Old Password" [(ngModel)]="old_password" type="password" name="old_password" required>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <input matInput placeholder="New Password" [(ngModel)]="new_password" type="password" name="new_password" required>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+          	<div class="warning">{{ password_warning }}</div>
+            <mat-form-field>
+              <input matInput placeholder="Confirm New Password" [(ngModel)]="confirm_new_password" type="password" name="confirm_new_password" required>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+    </form>
+    <!-- <mat-spinner [style.display]="showSpinner ? 'block' : 'none'"></mat-spinner> -->
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="changePassword()" color="primary" [disabled]="submit_disabled">Submit</button>
+  </mat-card-actions>
+</mat-card>
+

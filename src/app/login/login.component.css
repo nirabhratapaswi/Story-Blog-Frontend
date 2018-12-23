@@ -46,3 +46,7 @@ table {
 .warning {
   color: red;
 }
+
+.message {
+  color: green;
+}

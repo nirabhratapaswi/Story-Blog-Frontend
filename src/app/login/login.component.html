@@ -5,6 +5,7 @@
       <table cellspacing="0">
         <tr>
           <td>
+            <div class="message">{{ message }}</div>
             <div class="warning">{{ warning }}</div>
             <mat-form-field>
               <input matInput placeholder="Username" [(ngModel)]="username" name="username" required>
@@ -24,5 +25,6 @@
   </mat-card-content>
   <mat-card-actions>
     <button mat-raised-button (click)="login()" color="primary">Login</button>
+    <button mat-raised-button (click)="changePassword()" color="warn">Forgot Password</button>
   </mat-card-actions>
 </mat-card>
