@@ -14,6 +14,11 @@ import { AuthGuard } from './auth.guard';
 const routes: Routes = [
 	{ 
   		path: '',
+		redirectTo: '/stories',
+		pathMatch: 'full'
+	},
+	{ 
+  		path: 'home',
 		redirectTo: '/home',
 		pathMatch: 'full'
 	},

@@ -70,34 +70,27 @@ export class StoriesComponent implements OnInit {
 		  		padding_left: '2px',
 		  		padding_top: '0px'
 		  	};
-		  	// this.row_height = "1:1";
 		  	this.row_height = "350px";
-		  	// this.row_height = this.getHeight(40);
-  		}
-  		else if (window.innerWidth < 1000) {
+  		} else if (window.innerWidth < 1000) {
   			this.screen_columns = 2;
   			this.detect_mobile = false;
   			this.image_dimensions = {
 		  		width: '90%',
 		  		height: '25%',
-		  		padding_left: '1px',
+		  		padding_left: '0px',
 		  		padding_top: '15px'
 		  	};
-		  	// this.row_height = "2:1";
 		  	this.row_height = "350px";
-		  	// this.row_height = this.getHeight(30);
   		} else {
   			this.screen_columns = 3;
   			this.detect_mobile = false;
   			this.image_dimensions = {
 		  		width: '90%',
 		  		height: '30%',
-		  		padding_left: '2px',
+		  		padding_left: '0px',
 		  		padding_top: '15px'
 		  	};
-		  	// this.row_height = "1:1";
 		  	this.row_height = "350px";
-		  	// this.row_height = this.getHeight(30);
   		}
   	}
 
@@ -130,11 +123,6 @@ export class StoriesComponent implements OnInit {
 			}
 		});
 
-		/*window.onresize = function() {
-			if (window.innerWidth < 768) {
-	  			this. = 1;
-	  		}
-		};*/
 		this.onResize(null);
 	}
 
@@ -147,14 +135,8 @@ export class StoriesComponent implements OnInit {
 	  		self.storyOffset = self.stories.length;
 	  		console.log("Story Offset: ", self.storyOffset, ", Story Chunk Size: ", self.storyChunkSize, ", stories: ", stories);
 	  	}
-	  	// if (this.storiesService.getStoriesVariableChunk().length == 0) {
-	  		this.storiesService.getStoriesVariableChunkViaCallback(this.storyOffset, this.storyChunkSize, callback);
-	  		console.log("Story Offset: ", this.storyOffset, ", Story Chunk Size: ", this.storyChunkSize);
-	  	/*} else {
-	  		this.stories = this.storiesService.getStoriesVariableChunk();
-	  		this.storyOffset = this.stories.length;
-	  		console.log("storyOffset: ", this.storyOffset, ", storySize: ", this.storyChunkSize);
-	  	}*/
+	  	this.storiesService.getStoriesVariableChunkViaCallback(this.storyOffset, this.storyChunkSize, callback);
+	  	console.log("Story Offset: ", this.storyOffset, ", Story Chunk Size: ", this.storyChunkSize);
 	}
 
 	getStories() {
@@ -188,14 +170,8 @@ export class StoriesComponent implements OnInit {
 	  		self.mostLikedOffset = self.mostLikedStories.length;
 	  		console.log("Most Liked Offset: ", self.mostLikedOffset, ", most liked chunk size: ", self.mostLikedChunkSize, ", stories: ", mostLikedStories);
 	  	}
-	  	// if (this.storiesService.getStoriesVariableChunk().length == 0) {
-	  		this.storiesService.getMostLikedStoriesVariableChunkViaCallback(this.mostLikedOffset, this.mostLikedChunkSize, callback);
-	  		console.log("Most Liked Offset: ", this.mostLikedOffset, ", most liked chunk size: ", this.mostLikedChunkSize);
-	  	/*} else {
-	  		this.stories = this.storiesService.getStoriesVariableChunk();
-	  		this.mostLikedOffset = this.stories.length;
-	  		console.log("Offset: ", this.mostLikedOffset, ", size: ", this.mostLikedChunkSize);
-	  	}*/
+	  	this.storiesService.getMostLikedStoriesVariableChunkViaCallback(this.mostLikedOffset, this.mostLikedChunkSize, callback);
+	  	console.log("Most Liked Offset: ", this.mostLikedOffset, ", most liked chunk size: ", this.mostLikedChunkSize);
 	}
 
   	getWriters() {
@@ -216,7 +192,6 @@ export class StoriesComponent implements OnInit {
   		this.story_id = story_id;
   		console.log("Requested to go to story with id:", story_id);
   		this.storiesService.getOneStory(story_id).subscribe(data => {
-	        // console.log("Single story data from server: ", data);
 	        this.selectedFilter = "Single Story";
 	        this.singleStory = data;
 	        console.log("singleStory: ", data);
@@ -267,7 +242,6 @@ export class StoriesComponent implements OnInit {
 	this.writer_id = writer_id;
 	console.log("Requested to go to writer with id:", writer_id);
 	this.writersService.getOneWriter(writer_id).subscribe(data => {
-		// console.log("Single story data from server: ", data);
 		this.selectedFilter = "Single Writer";
 		this.singleWriter = data;
 		console.log("singleWriter: ", data);

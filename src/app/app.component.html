@@ -98,7 +98,7 @@
             Register
           </div>
         </button>
-        <button *ngIf="isAdmin()" mat-button (click)="routerClick('upload')">
+        <button *ngIf="isAdmin() && isLoggedIn()" mat-button (click)="routerClick('upload')">
           <div *ngIf="selected_tab=='Upload'">
             <u>Upload</u>
           </div>
@@ -106,10 +106,10 @@
             Upload
           </div>
         </button>
-        <button mat-menu-item (click)="routerClick('profile')">Profile</button>
-        <button mat-menu-item (click)="logoutUser()">Logout</button>
-        <button *ngIf="isAdmin()" mat-menu-item (click)="routerClick('admin')">Admin Panel</button>
-        <button mat-menu-item (click)="routerClick('settings')">Settings</button>
+        <button *ngIf="isLoggedIn()" mat-menu-item (click)="routerClick('profile')">Profile</button>
+        <button *ngIf="isLoggedIn()" mat-menu-item (click)="logoutUser()">Logout</button>
+        <button *ngIf="isAdmin() && isLoggedIn()" mat-menu-item (click)="routerClick('admin')">Admin Panel</button>
+        <button *ngIf="isLoggedIn()" mat-menu-item (click)="routerClick('settings')">Settings</button>
       </mat-menu>
   </mat-toolbar-row>
 </mat-toolbar>
