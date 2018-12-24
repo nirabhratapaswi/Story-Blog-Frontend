@@ -1,6 +1,30 @@
 <button class="text-center" mat-raised-button color="primary" (click)="deleteUser()">Delete Account</button>
 
-<mat-card class="login_card">
+<mat-card>
+  <mat-card-title><h3>Change Name</h3></mat-card-title>
+  <mat-card-content>
+    <form>
+      <table cellspacing="0">
+        <tr>
+          <td>
+            <div class="success_message">{{ name_success_message }}</div>
+            <div class="warning">{{ name_warning }}</div>
+            <mat-form-field>
+              <input matInput placeholder="Name" [(ngModel)]="name" type="text" name="name" required>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+    </form>
+    <!-- <mat-spinner [style.display]="showSpinner ? 'block' : 'none'"></mat-spinner> -->
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="changeName()" color="primary" [disabled]="submit_disabled">Submit</button>
+  </mat-card-actions>
+</mat-card>
+
+
+<mat-card>
   <mat-card-title><h3>Reset Password</h3></mat-card-title>
   <mat-card-content>
     <form>
@@ -37,4 +61,3 @@
     <button mat-raised-button (click)="changePassword()" color="primary" [disabled]="submit_disabled">Submit</button>
   </mat-card-actions>
 </mat-card>
-

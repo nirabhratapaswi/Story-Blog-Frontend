@@ -15,6 +15,9 @@ export class SettingsComponent implements OnInit {
 	password_warning: string = null;
 	warning: string = null;
 	success_message: string = null;
+	name_warning: string = null;
+	name_success_message: string = null;
+	name: string = null;
 	submit_disabled: boolean = false;
 
 	constructor(private authService: AuthService, private router: Router) {}
@@ -30,8 +33,27 @@ export class SettingsComponent implements OnInit {
     	});
 	}
 
+	changeName() {
+		this.submit_disabled = true;
+		this.authService.changeName(this.name).subscribe(data => {
+			this.submit_disabled = false;
+			if (!data.success) {
+				if (data.message == null || data.message == "" || data.message == undefined) {
+					data.message = "Some error occurred, try again...";
+				}
+				this.name_warning = data.message.toString();
+				this.name_success_message = null;
+				return;
+			}
+
+			this.name_warning = null;
+			this.name_success_message = "Name update successful!";
+		});
+	}
+
 	changePassword() {
 		console.log(this.old_password, this.new_password, this.confirm_new_password);
+		this.submit_disabled = true;
 		if (this.new_password != this.confirm_new_password) {
 			this.password_warning = "passwords don't match"; 
 			this.submit_disabled = false;
@@ -39,6 +61,7 @@ export class SettingsComponent implements OnInit {
 		}
 
 		this.authService.changePassword(this.old_password, this.new_password).subscribe(data => {
+			this.submit_disabled = false;
 			console.log("Server returned: ", data);
 			if (!data.success) {
 				if (data.message == null || data.message == "" || data.message == undefined) {

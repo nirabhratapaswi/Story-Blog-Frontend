@@ -24,7 +24,14 @@ interface changePassword {
   success: boolean,
   msg: String,
   new_password: string,
-  message: String
+  message: String,
+  error: any
+}
+
+interface changeName {
+  success: boolean,
+  msg: String,
+  error: any
 }
 
 @Injectable({
@@ -175,6 +182,17 @@ export class AuthService {
 
   forgotPassword(email: string) {
     return this.http.get<changePassword>(this.serverUrl.concat("/users/change_password?email=", email), {});
+  }
+
+  changeName(name: string) {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type':  'application/json',
+        'Authorization': this.jwtToken
+      })
+    };
+    return this.http.get<changePassword>(this.serverUrl.concat("/users/change_name?name=", name), httpOptions);
   }
 
   deleteUser() {
