@@ -5,8 +5,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { StoriesServiceService } from '../stories-service.service';
 import { WritersService } from '../writers.service';
+import { GenresService } from '../genres.service';
 import { Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 
 export interface DialogData {
   animal: string;
@@ -27,9 +29,14 @@ interface myData {
 })
 export class AdminComponent implements OnInit, OnDestroy {
 
-	title: string;
-	text: string;
+	title: string = null;
+	text: string = null;
 	author: string;
+  genre: string;
+  author_message: string = null;
+  author_warning: string = null;
+  genre_message: string = null;
+  genre_warning: string = null;
   source: LocalDataSource; // add a property to the component
   stories: Array<any> = [];
   message: any;
@@ -81,7 +88,7 @@ export class AdminComponent implements OnInit, OnDestroy {
         search: query
       },
       {
-        field: 'created_at',
+        field: 'creattexted_at',
         search: query
       }
     ], false); 
@@ -90,7 +97,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     // 'AND' by default, so changing to 'OR' by setting false here
   }
 
-  constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService, private writersService: WritersService) {
+  constructor(private http: HttpClient, private auth: AuthService, public storiesService: StoriesServiceService, private writersService: WritersService, private genresService: GenresService, public dialog: MatDialog) {
     this.source = new LocalDataSource(this.stories); // create the source
     this.subscription = this.storiesService.getMessage().subscribe(message => {
       console.log("Message recieved by Admin Component: ", message);
@@ -102,7 +109,28 @@ export class AdminComponent implements OnInit, OnDestroy {
     });
   }
 
+  openDialog(data: any, callback) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.height = (window.innerHeight*0.9).toString() + "px";
+    dialogConfig.width = (window.innerWidth*0.9).toString() + "px";
+
+    dialogConfig.data = data;
+
+    const dialogRef = this.dialog.open(AppAdminEditDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(updated_story => {
+      console.log(`Dialog result:`, updated_story);
+      callback(updated_story);
+    });
+  }
+
   ngOnInit() {
+    this.author_warning = null;
+    this.author_message = null;
+    this.genre_warning = null;
+    this.genre_message = null;
     console.log("Stories read: ", this.storiesService.getStoriesVariable());
     let self = this;
       function callback(stories) {
@@ -129,6 +157,19 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   rowSelect(event) {
     console.log("Row clicked: ", event);
+
+    let self = this;
+    function callback(updated_story: any) {
+      self.storiesService.updateStory(event.data._id, updated_story.title, updated_story.text).subscribe(resp => {
+        if (!resp.success) {
+          return;
+        }
+
+        console.log("Story updated .. from admin !!");
+      });
+    }
+
+    this.openDialog(event.data, callback);
   }
 
   editRow(event) {
@@ -176,8 +217,67 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-        // unsubscribe to ensure no memory leaks
-        this.subscription.unsubscribe();
-    }
+    // unsubscribe to ensure no memory leaks
+    this.subscription.unsubscribe();
+  }
 
+  getTitle() {
+    console.log("Requesting title: ", this.title);
+    return this.title;
+  }
+
+  addAuthor() {
+    this.writersService.addWriter(this.author).subscribe(resp => {
+      if (resp.success) {
+        this.author_message = resp.msg.toString();
+        this.author_warning = null;
+        this.storiesService.sendMessage('Added Writer from Admin Component!');
+        this.writersService.sendMessage('Added Writer from Admin Component!');
+      } else {
+        this.author_warning = resp.msg.toString();
+        this.author_message = null;
+      }
+    });
+  }
+
+  addGenre() {
+    this.genresService.addGenre(this.genre).subscribe(resp => {
+      if (resp.success) {
+        this.genre_message = resp.msg.toString();
+        this.genre_warning = null;
+        this.storiesService.sendMessage('Added Genre from Admin Component!');
+        this.writersService.sendMessage('Added Genre from Admin Component!');
+      } else {
+        this.genre_warning = resp.msg.toString();
+        this.genre_message = null;
+      }
+    });
+  }
+
+}
+
+@Component({
+  selector: 'app-admin-edit-dialog',
+  templateUrl: './admin.edit.component.html',
+  styleUrls: ['./admin.component.edit.css']
+})
+export class AppAdminEditDialog implements OnInit {
+
+  data: any = null;
+
+  constructor(private dialogRef: MatDialogRef<AppAdminEditDialog>, @Inject(MAT_DIALOG_DATA) data) {
+    this.data = data;
+  }
+
+  ngOnInit() {
+    console.log("Oninit data: ", this.data);
+  }
+
+  save() {
+    this.dialogRef.close(this.data);
+  }
+
+  close() {
+    this.dialogRef.close();
+  }
 }

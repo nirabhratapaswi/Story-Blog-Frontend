@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   margin: auto;
-  max-width: 80%;
-  /*height: 800px;*/
+  max-width: 90%;
+  min-height: 800px;
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
   -webkit-align-content: center;
@@ -17,7 +17,7 @@
   margin-right: auto;
   /*min-height: 80px;
   max-height: 440px;*/
-  width: 80%;
+  width: 100%;
 }
 
 .story_title {
@@ -25,7 +25,7 @@
 }
 
 .story_text {
-  height: 250px;
+  height: 300px;
   overflow-y: auto;
   overflow-x: auto;
 }
@@ -36,25 +36,4 @@
 
 .story_genre_tags {
   height: 50px;
-}
-
-.select_options {
-  width: 20%;
-  float: left;
-  color: black;
-}
-
-@media only screen and (max-width: 600px) {
-  /*mobile*/
-  .select_options {
-    width: 45%;
-    float: left;
-    color: black;
-  }
-}
-@media only screen and (min-width: 600px) {
-  /*tab*/
-}
-@media only screen and (min-width: 900px) {
-  /*desktop*/
 }

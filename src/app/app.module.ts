@@ -12,7 +12,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { MatGridListModule, MatRadioModule, MatDialogModule, MatMenuModule, MatProgressSpinnerModule, MatCheckboxModule, MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatCardModule, MatFormFieldModule, MatOptionModule, MatSelectModule, MatInputModule } from '@angular/material';
 import { StoriesComponent } from './stories/stories.component';
 import { LoginComponent } from './login/login.component';
-import { AdminComponent } from './admin/admin.component';
+import { AdminComponent, AppAdminEditDialog } from './admin/admin.component';
 import { AuthGuard } from "./auth.guard";
 import { UploadComponent } from './upload/upload.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -33,6 +33,7 @@ import { SettingsComponent } from './settings/settings.component';
     StoriesComponent,
     LoginComponent,
     AdminComponent,
+    AppAdminEditDialog,
     UploadComponent,
     ProfileComponent,
     RegisterComponent,
@@ -44,9 +45,11 @@ import { SettingsComponent } from './settings/settings.component';
     HttpClientModule,
     BrowserAnimationsModule,
     LayoutModule,
+    // MAT_DIALOG_DATA,
     MatGridListModule,
     MatRadioModule,
     MatDialogModule,
+    // MatDialogConfig,
     MatMenuModule,
     MatProgressSpinnerModule,
     MatCheckboxModule,
@@ -67,6 +70,7 @@ import { SettingsComponent } from './settings/settings.component';
   providers: [CookieService, RecordsService, AuthGuard, StoriesServiceService, RegisterService],
   bootstrap: [AppComponent],
   exports: [
-  ]
+  ],
+  entryComponents: [AppAdminEditDialog, ]
 })
 export class AppModule { }

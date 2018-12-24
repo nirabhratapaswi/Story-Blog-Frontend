@@ -14,19 +14,26 @@ interface writersData {
   updated_at: Date
 }
 
+interface addWriter {
+  success: boolean,
+  msg: String,
+  error: any
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class WritersService {
 
 	writers: Array<any> = null;
+  available_writers: Array<String> = null;
 	private subject = new Subject<any>();
   serverUrl = environment.baseUrl.concat(":", environment.port.toString());
 	message: any;
     subscription: Subscription;
     selfMessage: String = "Personal Message for writersService.";
 
-  	constructor(private http: HttpClient, private auth: AuthService) {
+  	constructor(private http: HttpClient, private authService: AuthService) {
   		console.log("Writers Service constructor called...");
   		this.getWriters();
   		this.subscription = this.getMessage().subscribe(message => {
@@ -52,6 +59,19 @@ export class WritersService {
         return this.subject.asObservable();
     }
 
+  addWriter(name: string) {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type':  'application/json',
+        'Authorization': this.authService.getJwtToken()
+      })
+    };
+    return this.http.post<addWriter>(this.serverUrl.concat("/writers"), {
+      name: name
+    }, httpOptions);
+  }
+
   getWriters() {
 		console.log();
 	  	return this.http.get<writersData[]>(this.serverUrl.concat("/writers"), {}).subscribe(data => {
@@ -59,6 +79,15 @@ export class WritersService {
 	  		this.writers = data;
 	  		this.sendMessage(this.selfMessage);
 	  	});
+  }
+
+  getAvailableWriters() {
+    console.log();
+      return this.http.get<string>(this.serverUrl.concat("/writers/list"), {}).subscribe(data => {
+        console.log("Available Writers Data from server: ", data);
+        this.available_writers = JSON.parse(data);
+        this.sendMessage(this.selfMessage);
+      });
   }
 
   getOneWriter(writer_id: string) {
@@ -69,10 +98,23 @@ export class WritersService {
   	return this.writers;
   }
 
+  getAvailableWriterVariable() {
+    return this.available_writers;
+  }
+
   getWritersVariableViaCallback(callback) {
   	return this.http.get<writersData[]>(this.serverUrl.concat("/writers"), {}).subscribe(data => {
 	  		console.log("Data from server: ", data);
-	  		callback(data);
+        this.writers = data;
+	  		callback(this.writers);
 	  	});
+  }
+
+  getAvailableWritersVariableViaCallback(callback) {
+    return this.http.get<string>(this.serverUrl.concat("/writers/list"), {}).subscribe(data => {
+        console.log("Data from server: ", data);
+        this.available_writers = JSON.parse(data);
+        callback(this.available_writers);
+      });
   }
 }

@@ -16,6 +16,12 @@ interface storiesData {
   likeStatus: boolean
 }
 
+interface updateStory {
+  success: boolean,
+  msg: String,
+  error: any
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -31,7 +37,7 @@ export class StoriesServiceService {
   subscription: Subscription;
   self_message: String = "Personal Message for storiesService.";
 
-  constructor(private http: HttpClient, private auth: AuthService) {
+  constructor(private http: HttpClient, private authService: AuthService) {
   	console.log("Stories Service constructor called...");
   	this.getStories();
   	this.subscription = this.getMessage().subscribe(message => {
@@ -171,6 +177,20 @@ export class StoriesServiceService {
         }
         callback(this.most_liked_stories_chunk);
       });
+  }
+
+  updateStory(story_id: string, title: string, text: string) {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type':  'application/json',
+        'Authorization': this.authService.getJwtToken()
+      })
+    };
+    return this.http.post<updateStory>(this.serverUrl.concat("/stories/update/?story_id=", story_id), {
+      title: title,
+      text: text
+    }, httpOptions);
   }
 
   /*refreshStoriesVariableChunkViaCallback(offset: number, size: number, callback) {

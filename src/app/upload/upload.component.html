@@ -8,12 +8,24 @@
   </mat-form-field>
   <br><br><br>
   <mat-form-field class="story_authors" appearance="outline">
-    <textarea class="story_authors" matInput placeholder="Authors" id="author" [(ngModel)]="author"></textarea>
+    <textarea class="story_authors" matInput placeholder="Authors" id="author" [(ngModel)]="author" disabled="true"></textarea>
   </mat-form-field>
+  <br><br><br><br>
+  <div class="select_options">Select Author: </div><mat-select placeholder="Authors" class="select_options">
+    <mat-option *ngFor="let single_author of available_authors" [value]="single_author" (click)="addWriter(single_author)">
+      {{single_author}}
+    </mat-option>
+  </mat-select>
   <br><br><br>
   <mat-form-field class="story_genre_tags" appearance="outline">
-    <textarea class="story_genre_tags" matInput placeholder="Genre" id="genre_tags" [(ngModel)]="genre_tags"></textarea>
+    <textarea class="story_genre_tags" matInput placeholder="Genre" id="genre_tags" [(ngModel)]="genre_tags" disabled="true"></textarea>
   </mat-form-field>
+  <br><br><br><br>
+  <div class="select_options">Select Genre: </div><mat-select placeholder="Genres" class="select_options">
+    <mat-option *ngFor="let single_genre of available_genres" [value]="single_genre" (click)="addGenre(single_genre)">
+      {{single_genre}}
+    </mat-option>
+  </mat-select>
   <br><br><br>
   <!-- <mat-form-field>
     <mat-select placeholder="Select">

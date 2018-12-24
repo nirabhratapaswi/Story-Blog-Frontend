@@ -1,0 +1,31 @@
+<h2 mat-dialog-title>Install Angular</h2>
+<mat-dialog-content class="mat-typography">
+  <div class="story_container">
+    <mat-form-field class="story_title" appearance="outline">
+      <input class="story_title" matInput placeholder="Title" id="title" [(ngModel)]="data.title">
+    </mat-form-field>
+    <br><br><br>
+    <mat-form-field class="story_text" appearance="outline">
+      <textarea class="story_text" matInput placeholder="Story Text" id="text" [(ngModel)]="data.text"></textarea>
+    </mat-form-field>
+    <br><br><br>
+    <mat-form-field class="story_authors" appearance="outline">
+      <textarea class="story_authors" matInput placeholder="Authors" id="author" [(ngModel)]="data.authors" disabled="true"></textarea>
+    </mat-form-field>
+    <br><br><br>
+    <mat-form-field class="story_genre_tags" appearance="outline">
+      <textarea class="story_genre_tags" matInput placeholder="Genre" id="genre_tags" [(ngModel)]="data.genre_tags" disabled="true"></textarea>
+    </mat-form-field>
+    <br><br><br>
+    <!-- <mat-form-field>
+      <mat-select placeholder="Select">
+        <mat-option value="option">Option</mat-option>
+      </mat-select>
+    </mat-form-field> -->
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()" mat-dialog-close>Cancel</button>
+  <!-- <button mat-button (click)="close()" cdkFocusInitial>Install</button> -->
+  <button mat-button (click)="save()">Save</button>
+</mat-dialog-actions>

@@ -1,19 +1,50 @@
-<!-- <div class="story_container">
-  <mat-form-field class="story_title" appearance="outline">
-    <input matInput placeholder="Title" id="title" [(ngModel)]="title">
-  </mat-form-field>
-  <br>
-  <mat-form-field class="story_text" appearance="outline">
-    <textarea class="story_text" matInput placeholder="Story Text" id="text" [(ngModel)]="text"></textarea>
-  </mat-form-field>
-  <br>
-  <mat-form-field class="story_authors" appearance="outline">
-    <textarea matInput placeholder="Authors" id="author" [(ngModel)]="author"></textarea>
-  </mat-form-field>
-  <div class="button-row text-center">
-    <button mat-raised-button color="primary" (click)="uploadStory($event)">Post Story</button>
-  </div>
-</div> -->
-
 <input #search class="search" type="text" placeholder="Search..." (keydown.enter)="onSearch(search.value)">
 <ng2-smart-table [settings]="settings" [source]="source" (userRowSelect)="rowSelect($event)" (editConfirm)="editRow($event)" (deleteConfirm)="deleteRow($event)"></ng2-smart-table>
+
+<mat-card class="login_card">
+  <mat-card-title><h3>Add Author</h3></mat-card-title>
+  <mat-card-content>
+    <form>
+      <table cellspacing="0">
+        <tr>
+          <td>
+            <div class="message">{{ author_message }}</div>
+            <div class="warning">{{ author_warning }}</div>
+            <mat-form-field>
+              <input matInput placeholder="Add Author" [(ngModel)]="author" name="author" required>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+    </form>
+    <!-- <mat-spinner [style.display]="showSpinner ? 'block' : 'none'"></mat-spinner> -->
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="addAuthor()" color="primary">Submit</button>
+  </mat-card-actions>
+</mat-card>
+
+<br><br>
+
+<mat-card class="login_card">
+  <mat-card-title><h3>Add Genre</h3></mat-card-title>
+  <mat-card-content>
+    <form>
+      <table cellspacing="0">
+        <tr>
+          <td>
+            <div class="message">{{ genre_message }}</div>
+            <div class="warning">{{ genre_warning }}</div>
+            <mat-form-field>
+              <input matInput placeholder="Add Genre" [(ngModel)]="genre" name="genre" required>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+    </form>
+    <!-- <mat-spinner [style.display]="showSpinner ? 'block' : 'none'"></mat-spinner> -->
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="addGenre()" color="primary">Submit</button>
+  </mat-card-actions>
+</mat-card>
