@@ -153,12 +153,13 @@ export class StoriesServiceService {
         for (let i=0; i<data.length; i++) {
           data[i].likeStatus = false;
         }
-        for (let x in data) {
-          if (this.stories_chunk == null) {
-            this.stories_chunk = new Array();
-          }
-          this.stories_chunk.push(data[x]);
+        if (this.stories_chunk == null) {
+          this.stories_chunk = new Array();
         }
+        this.stories_chunk = data;
+        /*for (let x in data) {
+          this.stories_chunk.push(data[x]);
+        }*/
         callback(this.stories_chunk);
       });
   }

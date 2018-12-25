@@ -39,12 +39,16 @@
         </mat-grid-tile>
       </div>
     </mat-grid-list>
-    <button class="text-center" mat-raised-button color="primary" (click)="loadMoreStories()">Load More</button>
+    <div style="width: 100%;">
+      <button class="text-center" mat-raised-button color="primary" (click)="prevStories()" style="float: left;" disabled="{{prev_disabled}}">Prev</button>
+      <!-- <button class="text-center" mat-raised-button color="primary" (click)="loadMoreStories()">Load More</button> -->
+      <button class="text-center" mat-raised-button color="primary" (click)="nextStories()" style="float: right;" disabled="{{next_disabled}}">Next</button>
+    </div>
     <br>
   </div>
   <div class="left" *ngIf="selectedFilter==filters[1]">
       <mat-grid-list cols="{{ screen_columns }}" rowHeight="{{ row_height }}">
-        <div *ngFor="let story of mostLikedStories; let storyIndex = index;" style="width: auto;">
+        <div *ngFor="let story of most_liked_stories; let storyIndex = index;" style="width: auto;">
           <!-- <br> -->
           <mat-grid-tile>
             <mat-card class="story_card" style="width: 90%;">
@@ -82,7 +86,11 @@
           </mat-grid-tile>
         </div>
     </mat-grid-list>
-    <button class="text-center" mat-raised-button color="primary" (click)="loadMoreMostLikedStories()">Load More</button>
+    <div style="width: 100%;">
+      <button class="text-center" mat-raised-button color="primary" (click)="prevMostLikedStories()" style="float: left;" disabled="{{prev_disabled}}">Prev</button>
+      <!-- <button class="text-center" mat-raised-button color="primary" (click)="loadMoreMostLikedStories()">Load More</button> -->
+      <button class="text-center" mat-raised-button color="primary" (click)="nextMostLikedStories()" style="float: right;" disabled="{{next_disabled}}">Next</button>
+    </div>
     <br>
   </div>
   <div class="left" *ngIf="selectedFilter==filters[2]">
