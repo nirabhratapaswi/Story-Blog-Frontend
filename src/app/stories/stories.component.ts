@@ -24,10 +24,7 @@ interface storiesData {
 })
 export class StoriesComponent implements OnInit {
 
-	cards: Array<any> = [];
-	date: String = (new Date()).toString();
 	stories: Array<any> = null;
-	most_liked_stories: Array<any> = null;
 	message: any;
     subscription: Subscription;
     writers: Array<any> = null;
@@ -37,10 +34,10 @@ export class StoriesComponent implements OnInit {
     writer_id: String = "";
     selectedFilter: string = "All Stories";
   	filters: string[] = ["All Stories", "Maximum Likes", "Writers"];
-  	private story_offset: number;
-  	private story_chunk_size: number = 5;
-  	private most_liked_offset: number;
-  	private most_liked_chunk_size: number = 5;
+  	story_offset: number = 0;
+  	story_chunk_size: number = 5;
+  	writer_offset: number = 0;
+  	writer_chunk_size: number = 5;
   	serverUrl = environment.baseUrl.concat(":", environment.port.toString());
   	screen_columns: number = 3;
   	detect_mobile: boolean = false;
@@ -53,14 +50,9 @@ export class StoriesComponent implements OnInit {
   	row_height: string = "1:1";
   	next_disabled = false;
   	prev_disabled = true;
-
-  	getHeight(percentage: number) {
-  		return (window.innerHeight * percentage / 100).toString() + "px";
-  	}
-
-  	getWidth(percentage: number) {
-  		return (window.innerWidth * percentage / 100).toString() + "px";
-  	}
+  	load_function: any = null;
+  	items_per_page: Array<number> = [5, 10, 20, 50];
+  	selected_item_per_page: number = 5;
 
   	onResize(event) {
   		if (window.innerWidth <= 600) {
@@ -97,30 +89,10 @@ export class StoriesComponent implements OnInit {
   	}
 
 	constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService, private writersService: WritersService) {
-		this.stories = this.storiesService.getStoriesVariableChunk();
-		this.most_liked_stories = this.storiesService.getMostLikedStoriesVariableChunk();
-		console.log("Stories, ", this.stories, ", mostLiekdStories: ", this.most_liked_stories);
-		// this.story_chunk_size = 10;
-		if (this.stories == null) {
-			this.story_offset = 0;
-			// this.loadMoreStories();
-			this.nextStories();
-		} else {
-			this.story_offset = this.stories.length;
-		}
-		// this.most_liked_chunk_size = 10;
-		if (this.most_liked_stories == null) {
-			this.most_liked_offset = 0;
-			this.loadMoreMostLikedStories();
-		} else {
-			this.most_liked_offset = this.most_liked_stories.length;
-		}
-		this.getWriters();
 		this.subscription = this.storiesService.getMessage().subscribe(message => {
 			console.log("Message recieved by storiesComponent: ", message);
 			this.message = message;
 			this.stories = this.storiesService.getStoriesVariableChunk();	// this.storiesService.getStoriesVariable();
-			this.most_liked_stories = this.storiesService.getMostLikedStoriesVariableChunk();	// this.storiesService.getMostLikedStoriesVariable();
 			if (this.selectedFilter == "Single Story") {
 				this.goToStory(this.story_id);
 			}
@@ -129,49 +101,63 @@ export class StoriesComponent implements OnInit {
 		this.onResize(null);
 	}
 
-	ngOnInit() {}
+	ngOnInit() {
+		this.load_function = this.storiesService.getStoriesVariableChunkViaCallback;
+		if (this.stories == null) {
+			this.story_offset = 0;
+			this.nextStories();
+		} else {
+			this.story_offset = this.stories.length;
+		}
+	}
+
+	changeItemsPerPage(items: number) {
+		console.log(`Items: ${items}`);
+		this.story_chunk_size = items;
+		this.writer_chunk_size = items;
+		console.log(`Selected filter: ${this.selectedFilter}`);
+		this.changeView(this.selectedFilter);
+	}
+
+	changeView(filter) {
+		if (filter == this.filters[0]) {
+			this.story_offset = -this.story_chunk_size;
+			this.load_function = this.storiesService.getStoriesVariableChunkViaCallback;
+			this.nextStories();
+		} else if (filter == this.filters[1]) {
+			this.story_offset = -this.story_chunk_size;
+			this.load_function = this.storiesService.getMostLikedStoriesVariableChunkViaCallback;
+			this.nextStories();
+		} else if (filter == this.filters[2]) {
+			this.writer_offset = -this.writer_chunk_size;
+			this.nextWriters();
+		}
+	}
 
 	setNextPrevDisableForStories(stories) {
 		if (this.story_chunk_size > this.stories.length || stories == null || (stories != null && stories.length == 0)) {
-			console.log("Lol next happened!");
 			this.next_disabled = true;
 		} else {
 			this.next_disabled = false;
 		}
 		if (this.story_offset == 0) {
-			console.log("Lol prev happened!");
 			this.prev_disabled = true;
 		} else {
 			this.prev_disabled = false;
 		}
-		console.log("Next, prev", this.next_disabled, this.prev_disabled);
 	}
 
-	setNextPrevDisableForMostLikedStories(stories) {
-		if (this.most_liked_chunk_size > this.most_liked_stories.length || stories == null || (stories != null && stories.length == 0)) {
-			console.log("Lol next happened!");
+	setNextPrevDisableForWriters(writers) {
+		if (this.writer_chunk_size > this.writers.length || writers == null || (writers != null && writers.length == 0)) {
 			this.next_disabled = true;
 		} else {
 			this.next_disabled = false;
 		}
-		if (this.most_liked_offset == 0) {
-			console.log("Lol prev happened!");
+		if (this.writer_offset == 0) {
 			this.prev_disabled = true;
 		} else {
 			this.prev_disabled = false;
 		}
-		console.log("Next, prev", this.next_disabled, this.prev_disabled);
-	}
-
-	loadMoreStories() {
-		let self = this;
-	  	function callback(stories) {
-	  		self.stories = stories;
-	  		self.story_offset = self.stories.length;
-	  		console.log("Story Offset: ", self.story_offset, ", Story Chunk Size: ", self.story_chunk_size, ", stories: ", stories);
-	  	}
-	  	this.storiesService.getStoriesVariableChunkViaCallback(this.story_offset, this.story_chunk_size, callback);
-	  	console.log("Story Offset: ", this.story_offset, ", Story Chunk Size: ", this.story_chunk_size);
 	}
 
 	prevStories() {
@@ -180,17 +166,15 @@ export class StoriesComponent implements OnInit {
 	  	function callback(stories) {
 	  		self.stories = stories;
 	  		self.setNextPrevDisableForStories(stories);
-	  		// self.story_offset =  (self.story_offset - self.story_chunk_size >= 0) ? (self.story_offset - self.story_chunk_size) : 0;
-	  		console.log("Story Offset: ", self.story_offset, ", Story Chunk Size: ", self.story_chunk_size, ", stories: ", stories);
 	  	}
-	  	this.storiesService.getStoriesVariableChunkViaCallback(this.story_offset, this.story_chunk_size, callback);
-	  	console.log("Story Offset: ", this.story_offset, ", Story Chunk Size: ", this.story_chunk_size);
+	  	this.load_function(this.story_offset, this.story_chunk_size, callback);
 	}
 
 	nextStories() {
-		// this.story_offset = this.story_offset + this.story_chunk_size;
-		if (this.stories != null) {
+		if (this.stories != null && this.story_offset >= 0) {
 			this.story_offset = (this.story_chunk_size > this.stories.length) ? this.story_offset : (this.story_offset + this.story_chunk_size);
+		} else {
+			this.story_offset = 0;
 		}
 		let self = this;
 	  	function callback(stories) {
@@ -200,93 +184,37 @@ export class StoriesComponent implements OnInit {
 	  			self.story_offset = self.story_offset - self.story_chunk_size;
 	  		}
 	  		self.setNextPrevDisableForStories(stories);
-	  		// self.story_offset = (self.story_chunk_size > stories.length) ? self.story_offset : (self.story_offset + self.story_chunk_size);
-	  		console.log("Story Offset: ", self.story_offset, ", Story Chunk Size: ", self.story_chunk_size, ", stories: ", stories);
 	  	}
-	  	this.storiesService.getStoriesVariableChunkViaCallback(this.story_offset, this.story_chunk_size, callback);
-	  	console.log("Story Offset: ", this.story_offset, ", Story Chunk Size: ", this.story_chunk_size);
+	  	this.load_function(this.story_offset, this.story_chunk_size, callback);
 	}
 
-	prevMostLikedStories() {
-		this.most_liked_offset =  (this.most_liked_offset - this.most_liked_chunk_size >= 0) ? (this.most_liked_offset - this.most_liked_chunk_size) : 0;
+	prevWriters() {
+		this.writer_offset =  (this.writer_offset - this.writer_chunk_size >= 0) ? (this.writer_offset - this.writer_chunk_size) : 0;
 		let self = this;
-	  	function callback(most_liked_stories) {
-	  		self.most_liked_stories = most_liked_stories;
-	  		self.setNextPrevDisableForMostLikedStories(most_liked_stories);
-	  		// self.most_liked_offset =  (self.most_liked_offset - self.most_liked_chunk_size >= 0) ? (self.most_liked_offset - self.most_liked_chunk_size) : 0;
-	  		console.log("Story Offset: ", self.most_liked_offset, ", Story Chunk Size: ", self.most_liked_chunk_size, ", stories: ", most_liked_stories);
+	  	function callback(writers) {
+	  		self.writers = writers;
+	  		self.setNextPrevDisableForWriters(writers);
 	  	}
-	  	this.storiesService.getStoriesVariableChunkViaCallback(this.most_liked_offset, this.most_liked_chunk_size, callback);
-	  	console.log("Story Offset: ", this.most_liked_offset, ", Story Chunk Size: ", this.most_liked_chunk_size);
+	  	this.writersService.getWritersVariableChunkViaCallback(this.writer_offset, this.writer_chunk_size, callback);
 	}
 
-	nextMostLikedStories() {
-		if (this.most_liked_stories != null) {
-			this.most_liked_offset = (this.most_liked_chunk_size > this.most_liked_stories.length) ? this.most_liked_offset : (this.most_liked_offset + this.most_liked_chunk_size);
+	nextWriters() {
+		if (this.writers != null && this.writer_offset >= 0) {
+			this.writer_offset = (this.writer_chunk_size > this.writers.length) ? this.writer_offset : (this.writer_offset + this.writer_chunk_size);
+		} else {
+			this.writer_offset = 0;
 		}
 		let self = this;
-	  	function callback(most_liked_stories) {
-	  		if (most_liked_stories != null && most_liked_stories.length != 0) {
-	  			self.most_liked_stories = most_liked_stories;
+	  	function callback(writers) {
+	  		if (writers != null && writers.length != 0) {
+	  			self.writers = writers;
 	  		} else {
-	  			self.most_liked_offset = self.most_liked_offset - self.most_liked_chunk_size;
+	  			self.writer_offset = self.writer_offset - self.writer_chunk_size;
 	  		}
-	  		self.setNextPrevDisableForMostLikedStories(most_liked_stories);
-	  		// self.most_liked_offset = (self.most_liked_chunk_size > stories.length) ? self.most_liked_offset : (self.most_liked_offset + self.most_liked_chunk_size);
-	  		console.log("Story Offset: ", self.most_liked_offset, ", Story Chunk Size: ", self.most_liked_chunk_size, ", stories: ", most_liked_stories);
+	  		self.setNextPrevDisableForWriters(writers);
 	  	}
-	  	this.storiesService.getStoriesVariableChunkViaCallback(this.most_liked_offset, this.most_liked_chunk_size, callback);
-	  	console.log("Story Offset: ", this.most_liked_offset, ", Story Chunk Size: ", this.most_liked_chunk_size);
+	  	this.writersService.getWritersVariableChunkViaCallback(this.writer_offset, this.writer_chunk_size, callback);
 	}
-
-	getStories() {
-	  	let self = this;
-	  	function callback(stories) {
-	  		self.stories = stories;
-	  	}
-	  	if (this.storiesService.getStoriesVariable() == null) {
-	  		this.storiesService.getStoriesVariableViaCallback(callback);
-	  	} else {
-	  		this.stories = this.storiesService.getStoriesVariable();
-	  	}
-  	}
-
-  	getMostLikedStories() {
-	  	let self = this;
-	  	function callback(most_liked_stories) {
-	  		self.most_liked_stories = most_liked_stories;
-	  	}
-	  	if (this.storiesService.getMostLikedStoriesVariable() == null) {
-	  		this.storiesService.getMostLikedStoriesVariableViaCallback(callback);
-	  	} else {
-	  		this.most_liked_stories = this.storiesService.getMostLikedStoriesVariable();
-	  	}
-  	}
-
-  	loadMoreMostLikedStories() {
-		let self = this;
-	  	function callback(most_liked_stories) {
-	  		self.most_liked_stories = most_liked_stories;
-	  		self.most_liked_offset = self.most_liked_stories.length;
-	  		console.log("Most Liked Offset: ", self.most_liked_offset, ", most liked chunk size: ", self.most_liked_chunk_size, ", stories: ", most_liked_stories);
-	  	}
-	  	this.storiesService.getMostLikedStoriesVariableChunkViaCallback(this.most_liked_offset, this.most_liked_chunk_size, callback);
-	  	console.log("Most Liked Offset: ", this.most_liked_offset, ", most liked chunk size: ", this.most_liked_chunk_size);
-	}
-
-  	getWriters() {
-  		let self = this;
-		function callback(writers) {
-	  		self.writers = writers;
-	  		console.log("Writers in stories component: ", writers);
-	  	}
-	  	if (this.writersService.getWritersVariable() == null) {
-	  		this.writersService.getWritersVariableViaCallback(callback);
-	  	} else {
-	  		this.writers = this.writersService.getWritersVariable();
-	  		console.log("Writers: ", this.writers);
-	  	}
-  	}
 
   	goToStory(story_id) {
   		this.story_id = story_id;
@@ -294,58 +222,46 @@ export class StoriesComponent implements OnInit {
   		this.storiesService.getOneStory(story_id).subscribe(data => {
 	        this.selectedFilter = "Single Story";
 	        this.singleStory = data;
-	        console.log("singleStory: ", data);
       	});
   	}
 
-  likeStory(story_id: string, story_index: number) {
-    console.log("Trying to like: ", story_id);
-    if (!this.auth.getJwtToken()) {
-    	return;
+	likeStory(story_id: string, story_index: number) {
+    	if (!this.auth.getJwtToken()) {
+    		return;
+    	}
+    	let self = this;
+    	let httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type':  'application/json',
+				'Authorization': this.auth.getJwtToken()
+			})
+    	};
+    	this.http.get<storiesData>(this.serverUrl.concat("/stories/like/", story_id), httpOptions).subscribe(data => {
+			if (data.success) {
+				this.story_offset -= this.story_chunk_size;
+				this.nextStories();
+			}
+		});
     }
-    let httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json',
-        'Authorization': this.auth.getJwtToken()
-      })
-    };
-    return this.http.get<storiesData>(this.serverUrl.concat("/stories/like/", story_id), httpOptions).subscribe(data => {
-		console.log("Data from server: ", data);
-		if (data.success) {
-			if (story_index) {
-				this.stories[story_index].likeStatus = !this.stories[story_index].likeStatus;
-			}
-			
-			this.storiesService.setStoriesVariableChunk(null);
-			this.storiesService.setMostLikedStoriesVariableChunk(null);
-			let story_offset_save = this.story_offset;
-			for (let i=0; i<story_offset_save; i++) {
-				this.story_offset = i;
-				this.loadMoreStories();
-				i += this.story_chunk_size;
-			}
-			this.story_offset = story_offset_save;
-			let most_liked_offset_save = this.most_liked_offset;
-			for (let i=0; i<story_offset_save; i++) {
-				this.most_liked_offset = i;
-				this.loadMoreMostLikedStories();
-				i += this.story_chunk_size;
-			}
-			this.most_liked_offset = most_liked_offset_save;
 
-			this.storiesService.sendMessage("Message from Stories Component!");
-		}
-	});
-  }
+    getWriters() {
+  		let self = this;
+		function callback(writers) {
+	  		self.writers = writers;
+	  	}
+	  	if (this.writersService.getWritersVariable() == null) {
+	  		this.writersService.getWritersVariableViaCallback(callback);
+	  	} else {
+	  		this.writers = this.writersService.getWritersVariable();
+	  	}
+  	}
 
-  goToWriter(writer_id: string) {
-	this.writer_id = writer_id;
-	console.log("Requested to go to writer with id:", writer_id);
-	this.writersService.getOneWriter(writer_id).subscribe(data => {
-		this.selectedFilter = "Single Writer";
-		this.singleWriter = data;
-		console.log("singleWriter: ", data);
-	});
-  }
+	goToWriter(writer_id: string) {
+		this.writer_id = writer_id;
+		this.writersService.getOneWriter(writer_id).subscribe(data => {
+			this.selectedFilter = "Single Writer";
+			this.singleWriter = data;
+		});
+	}
 
 }

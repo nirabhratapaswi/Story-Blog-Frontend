@@ -94,7 +94,6 @@ export class AuthService {
     };
     let response = this.http.get<myData>(this.serverUrl.concat("/is_logged_in"), httpOptions);
     response.subscribe(data => {
-      console.log("Returned data: ", data);
       callback(data);
     });
   }
@@ -120,7 +119,6 @@ export class AuthService {
     this.userData.username = data.username;
     this.userData.id = data.id;
     this.sendMessage("User is logged in.", data);
-    console.log("Setting user data from: ", data, ", to: ", this.userData);
   }
 
   getUserData() {
@@ -132,7 +130,6 @@ export class AuthService {
   }
 
   getUserDetails(username: String, password: String) {
-  	console.log("Username: ", username, "\nPassword: ", password);
   	return this.http.post<myData>(this.serverUrl.concat("/login"), {
   		username: username,
   		password: password

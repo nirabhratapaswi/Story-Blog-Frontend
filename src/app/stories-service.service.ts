@@ -66,7 +66,6 @@ export class StoriesServiceService {
 
   loadStories(offset: number, size: number) {
     return this.http.get<storiesData[]>(this.serverUrl.concat("/stories/chunk/", offset.toString(), "/", size.toString()), {}).subscribe(data => {
-      console.log("All Stories: ", data);
       for (let i=0; i<data.length; i++) {
         data[i].likeStatus = false;
       }
@@ -77,7 +76,6 @@ export class StoriesServiceService {
 
   getStories() {
 	  	return this.http.get<storiesData[]>(this.serverUrl.concat("/stories"), {}).subscribe(data => {
-	  		console.log("All Stories: ", data);
 	  		for (let i=0; i<data.length; i++) {
 	  			data[i].likeStatus = false;
 	  		}
@@ -88,7 +86,6 @@ export class StoriesServiceService {
 
   getMostLikedStories() {
       return this.http.get<storiesData[]>(this.serverUrl.concat("/stories/mostLikes"), {}).subscribe(data => {
-        console.log("Most Liked Stories: ", data);
         for (let i=0; i<data.length; i++) {
           data[i].likeStatus = false;
         }
@@ -127,7 +124,6 @@ export class StoriesServiceService {
 
   getStoriesVariableViaCallback(callback) {
     return this.http.get<storiesData[]>(this.serverUrl.concat("/stories"), {}).subscribe(data => {
-        console.log("All Stories: ", data);
         for (let i=0; i<data.length; i++) {
           data[i].likeStatus = false;
         }
@@ -149,7 +145,6 @@ export class StoriesServiceService {
 
   getStoriesVariableChunkViaCallback(offset: number, size: number, callback) {
     return this.http.get<storiesData[]>(this.serverUrl.concat("/stories/chunk/", offset.toString(), "/", size.toString()), {}).subscribe(data => {
-        console.log("All Stories: ", data);
         for (let i=0; i<data.length; i++) {
           data[i].likeStatus = false;
         }
@@ -157,25 +152,19 @@ export class StoriesServiceService {
           this.stories_chunk = new Array();
         }
         this.stories_chunk = data;
-        /*for (let x in data) {
-          this.stories_chunk.push(data[x]);
-        }*/
         callback(this.stories_chunk);
       });
   }
 
   getMostLikedStoriesVariableChunkViaCallback(offset: number, size: number, callback) {
     return this.http.get<storiesData[]>(this.serverUrl.concat("/stories/chunk/mostLikes/", offset.toString(), "/", size.toString()), {}).subscribe(data => {
-        console.log("Most Liked Stories: ", data);
         for (let i=0; i<data.length; i++) {
           data[i].likeStatus = false;
         }
-        for (let x in data) {
-          if (this.most_liked_stories_chunk == null) {
-            this.most_liked_stories_chunk = new Array();
-          }
-          this.most_liked_stories_chunk.push(data[x]);
+        if (this.most_liked_stories_chunk == null) {
+          this.most_liked_stories_chunk = new Array();
         }
+        this.most_liked_stories_chunk = data;
         callback(this.most_liked_stories_chunk);
       });
   }
@@ -194,65 +183,4 @@ export class StoriesServiceService {
     }, httpOptions);
   }
 
-  /*refreshStoriesVariableChunkViaCallback(offset: number, size: number, callback) {
-    let stories_chunk_new = null,
-        offsets = new Array();
-    for (let i=0; i<offset; i++) {
-      offsets.push(i*size);
-    }
-    return async.each(offsets, (offsetVariable, async_callback) => {
-      this.http.get<storiesData[]>(this.serverUrl.concat("/stories/chunk/", offsetVariable.toString(), "/", size.toString()), {}).subscribe(data => {
-        console.log("All Stories: ", data);
-        for (let i=0; i<data.length; i++) {
-          data[i].likeStatus = false;
-        }
-        for (let x in data) {
-          if (stories_chunk_new == null) {
-            stories_chunk_new = new Array();
-          }
-          stories_chunk_new.push(data[x]);
-        }
-        async_callback();
-      });
-    }, (err) => {
-      if (err) {
-        console.log("Error: ", err);
-        return null;
-      } else {
-        this.stories_chunk = stories_chunk_new;
-        return callback(this.stories_chunk);
-      }
-    });
-  }
-
-  refreshMostLikedStoriesVariableChunkViaCallback(offset: number, size: number, callback) {
-    let most_liked_stories_chunk_new = null,
-        offsets = new Array();
-    for (let i=0; i<offset; i++) {
-      offsets.push(i*size);
-    }
-    return async.each(offsets, (offsetVariable, async_callback) => {
-      this.http.get<storiesData[]>(this.serverUrl.concat("/stories/chunk/mostLikes/", offsetVariable.toString(), "/", size.toString()), {}).subscribe(data => {
-        console.log("All Stories: ", data);
-        for (let i=0; i<data.length; i++) {
-          data[i].likeStatus = false;
-        }
-        for (let x in data) {
-          if (most_liked_stories_chunk_new == null) {
-            most_liked_stories_chunk_new = new Array();
-          }
-          most_liked_stories_chunk_new.push(data[x]);
-        }
-        async_callback();
-      });
-    }, (err) => {
-      if (err) {
-        console.log("Error: ", err);
-        return null;
-      } else {
-        this.most_liked_stories_chunk = most_liked_stories_chunk_new;
-        return callback(this.most_liked_stories_chunk);
-      }
-    });
-  }*/
 }

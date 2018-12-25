@@ -26,6 +26,7 @@ interface addWriter {
 export class WritersService {
 
 	writers: Array<any> = null;
+  writers_chunk: Array<any> = null;
   available_writers: Array<String> = null;
 	private subject = new Subject<any>();
   serverUrl = environment.baseUrl.concat(":", environment.port.toString());
@@ -117,4 +118,12 @@ export class WritersService {
         callback(this.available_writers);
       });
   }
+
+  getWritersVariableChunkViaCallback(offset: number, size: number, callback) {
+    return this.http.get<writersData[]>(this.serverUrl.concat("/writers/chunk/", offset.toString(), "/", size.toString()), {}).subscribe(data => {
+        this.writers_chunk = data;
+        callback(this.writers_chunk);
+      });
+  }
+
 }

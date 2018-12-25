@@ -1,36 +1,38 @@
 <div class="parentClass" (window:resize)="onResize($event)">
-  <div class="left" *ngIf="selectedFilter==filters[0]">
+
+  <div class="left" *ngIf="selectedFilter==filters[0] || selectedFilter==filters[1]">
+    <div style="width: 100%;">
+      <button class="text-center" mat-raised-button color="primary" (click)="prevStories()" style="float: left;" disabled="{{prev_disabled}}">Prev</button>
+      <button class="text-center" mat-raised-button color="primary" (click)="nextStories()" style="float: right;" disabled="{{next_disabled}}">Next</button>
+    </div>
+    <br><br>
     <mat-grid-list cols="{{ screen_columns }}" rowHeight="{{ row_height }}">
       <div *ngFor="let story of stories; let storyIndex = index;" style="width: auto;">
-        <!-- <br> -->
         <mat-grid-tile>
           <mat-card class="story_card" style="width: 90%;">
             <mat-card-title class="center" (click)="goToStory(story._id)">
-              <h2 class="pointer">{{ story.title }}</h2>
-              <h6 style="text-align: left;">
-                <!-- Writers --> Writers: 
+              <h4 class="pointer">{{ story.title }}</h4>
+              <div style="text-align: left; font-size: 14px;">
+                <b>Writers: </b>
                 <span *ngFor="let author of story.authors; let authorIndex = index;">
                   <i>{{ author }}</i>
                   <span *ngIf="authorIndex < story.authors.length-1">, </span>
                 </span>
                 <br>
-                <!-- Genre --> Genre: 
+                <b>Genre: </b>
                 <span *ngFor="let genre of story.genre_tags; let genreIndex = index;">
                   <i>{{ genre }}</i>
                   <span *ngIf="genreIndex < story.genre_tags.length-1">, </span>
                 </span>
-              </h6>
+              </div>
             </mat-card-title>
-            <mat-card-subtitle onmousedown='return false;' onselectstart='return false;'>Posted: [<i>{{ story.created_at | date: 'dd/MM/yyyy' }}</i>]</mat-card-subtitle>
-            <!-- <mat-card-content onmousedown='return false;' onselectstart='return false;'>{{ story.text }}</mat-card-content> -->
+            <mat-card-subtitle onmousedown='return false;' onselectstart='return false;'>Posted: <i>{{ story.created_at | date: 'dd/MM/yyyy' }}</i></mat-card-subtitle>
             <mat-card-footer onmousedown='return false;' onselectstart='return false;'>
               <mat-icon class="mat-icon-rtl-mirror" svgIcon="assets/images/favourite.svg"></mat-icon>
               <span *ngIf="story.likeStatus">
-                <!-- <button mat-button color="primary" (click)="likeStory(story._id, storyIndex)">Like</button> -->
                 <button type="button" color="primary" mat-icon-button (click)="likeStory(story._id, storyIndex)"><mat-icon>thumb_up</mat-icon></button>
               </span>
               <span *ngIf="!story.likeStatus">
-                <!-- <button mat-button color="warn" (click)="likeStory(story._id, storyIndex)">Like</button> -->
                 <button type="button" color="warn" mat-icon-button (click)="likeStory(story._id, storyIndex)"><mat-icon>thumb_up</mat-icon></button>
               </span>
               <span>+ {{ story.likes.length }}</span>
@@ -41,79 +43,44 @@
     </mat-grid-list>
     <div style="width: 100%;">
       <button class="text-center" mat-raised-button color="primary" (click)="prevStories()" style="float: left;" disabled="{{prev_disabled}}">Prev</button>
-      <!-- <button class="text-center" mat-raised-button color="primary" (click)="loadMoreStories()">Load More</button> -->
       <button class="text-center" mat-raised-button color="primary" (click)="nextStories()" style="float: right;" disabled="{{next_disabled}}">Next</button>
     </div>
     <br>
   </div>
-  <div class="left" *ngIf="selectedFilter==filters[1]">
-      <mat-grid-list cols="{{ screen_columns }}" rowHeight="{{ row_height }}">
-        <div *ngFor="let story of most_liked_stories; let storyIndex = index;" style="width: auto;">
-          <!-- <br> -->
-          <mat-grid-tile>
-            <mat-card class="story_card" style="width: 90%;">
-              <mat-card-title class="center" (click)="goToStory(story._id)">
-                <h2 class="pointer">{{ story.title }}</h2>
-                <h6 style="text-align: left;">
-                  <!-- Writers --> Writers: 
-                  <span *ngFor="let author of story.authors; let authorIndex = index;">
-                    <i>{{ author }}</i>
-                    <span *ngIf="authorIndex < story.authors.length-1">, </span>
-                  </span>
-                  <br>
-                  <!-- Genre --> Genre: 
-                  <span *ngFor="let genre of story.genre_tags; let genreIndex = index;">
-                    <i>{{ genre }}</i>
-                    <span *ngIf="genreIndex < story.genre_tags.length-1">, </span>
-                  </span>
-                </h6>
-              </mat-card-title>
-              <mat-card-subtitle onmousedown='return false;' onselectstart='return false;'>Posted: [<i>{{ story.created_at | date: 'dd/MM/yyyy' }}</i>]</mat-card-subtitle>
-              <!-- <mat-card-content onmousedown='return false;' onselectstart='return false;'>{{ story.text }}</mat-card-content> -->
-              <mat-card-footer onmousedown='return false;' onselectstart='return false;'>
-                <mat-icon class="mat-icon-rtl-mirror" svgIcon="assets/images/favourite.svg"></mat-icon>
-                <span *ngIf="story.likeStatus">
-                  <!-- <button mat-button color="primary" (click)="likeStory(story._id, storyIndex)">Like</button> -->
-                  <button type="button" color="primary" mat-icon-button (click)="likeStory(story._id, storyIndex)"><mat-icon>thumb_up</mat-icon></button>
-                </span>
-                <span *ngIf="!story.likeStatus">
-                  <!-- <button mat-button color="warn" (click)="likeStory(story._id, storyIndex)">Like</button> -->
-                  <button type="button" color="warn" mat-icon-button (click)="likeStory(story._id, storyIndex)"><mat-icon>thumb_up</mat-icon></button>
-                </span>
-                <span>+ {{ story.likes.length }}</span>
-              </mat-card-footer>
-            </mat-card>
-          </mat-grid-tile>
-        </div>
-    </mat-grid-list>
-    <div style="width: 100%;">
-      <button class="text-center" mat-raised-button color="primary" (click)="prevMostLikedStories()" style="float: left;" disabled="{{prev_disabled}}">Prev</button>
-      <!-- <button class="text-center" mat-raised-button color="primary" (click)="loadMoreMostLikedStories()">Load More</button> -->
-      <button class="text-center" mat-raised-button color="primary" (click)="nextMostLikedStories()" style="float: right;" disabled="{{next_disabled}}">Next</button>
-    </div>
-    <br>
-  </div>
+
+
   <div class="left" *ngIf="selectedFilter==filters[2]">
+    <div style="width: 100%;">
+      <button class="text-center" mat-raised-button color="primary" (click)="prevWriters()" style="float: left;" disabled="{{prev_disabled}}">Prev</button>
+      <button class="text-center" mat-raised-button color="primary" (click)="nextWriters()" style="float: right;" disabled="{{next_disabled}}">Next</button>
+    </div>
+    <br><br>
     <mat-grid-list cols="{{ screen_columns }}" rowHeight="{{ row_height }}">
       <div *ngFor="let writer of writers; let writerIndex = index;" style="width: auto;">
-        <!-- <br> -->
         <mat-grid-tile>
           <mat-card class="story_card" style="width: 90%;">
             <mat-card-title class="center" (click)="goToWriter(writer._id)">
-              <h2 class="pointer">{{ writer.name }}</h2>
-              <h6 style="text-align: left;">
-                <!-- Authors --> Genre: 
+              <h4 class="pointer">{{ writer.name }}</h4>
+              <div style="text-align: left; font-size: 14px;">
+                <b>Genres written: </b> 
                 <span *ngFor="let genre of writer.genre_tags; let genreIndex = index;">
                   <i>{{ writer.genre_tags[genreIndex] }}</i>
                   <span *ngIf="genreIndex < writer.genre_tags.length-1">, </span>
                 </span>
-              </h6>
+              </div>
             </mat-card-title>
           </mat-card>
         </mat-grid-tile>
       </div>
     </mat-grid-list>
+    <div style="width: 100%;">
+      <button class="text-center" mat-raised-button color="primary" (click)="prevWriters()" style="float: left;" disabled="{{prev_disabled}}">Prev</button>
+      <button class="text-center" mat-raised-button color="primary" (click)="nextWriters()" style="float: right;" disabled="{{next_disabled}}">Next</button>
+    </div>
+    <br>
   </div>
+
+
   <div class="left" *ngIf="selectedFilter=='Single Story'">
     <mat-card class="full_story_card">
       <mat-card-title class="center">
@@ -132,25 +99,23 @@
           </span>
         </h6>
       </mat-card-title>
-      <mat-card-subtitle onmousedown='return false;' onselectstart='return false;'>Created On: <i>{{ singleStory.created_at }}</i></mat-card-subtitle>
-      <!-- <mat-card-content onmousedown='return false;' onselectstart='return false;' class="full_story">{{ singleStory.text }}</mat-card-content> -->
+      <mat-card-subtitle onmousedown='return false;' onselectstart='return false;'>Posted On: <i>{{ singleStory.created_at }}</i></mat-card-subtitle>
       <mat-card-content onmousedown='return false;' onselectstart='return false;' class="full_story"><div [innerHTML]="singleStory.text"></div></mat-card-content>
       <mat-card-footer onmousedown='return false;' onselectstart='return false;'>
         <mat-icon class="mat-icon-rtl-mirror" svgIcon="assets/images/favourite.svg"></mat-icon>
         <span *ngIf="singleStory.likeStatus">
-          <!-- <button mat-button color="primary" (click)="likeStory(singleStory._id, storyIndex)">Like</button> -->
           <button type="button" color="primary" mat-icon-button (click)="likeStory(singleStory._id, null)"><mat-icon>thumb_up</mat-icon></button>
         </span>
         <span *ngIf="!singleStory.likeStatus">
-          <!-- <button mat-button color="warn" (click)="likeStory(singleStory._id, storyIndex)">Like</button> -->
           <button type="button" color="warn" mat-icon-button (click)="likeStory(singleStory._id, null)"><mat-icon>thumb_up</mat-icon></button>
         </span>
         <span>+ {{ singleStory.likes.length }}</span>
       </mat-card-footer>
     </mat-card>
   </div>
+
+
   <div class="left" *ngIf="selectedFilter=='Single Writer'">
-    <!-- <div *ngFor="let writer of writers; let writerIndex = index;"> -->
       <h2>{{ singleWriter.name }} :</h2>
       <mat-list>
         <mat-list-item *ngFor="let story of singleWriter.stories; let storyIndex = index;">
@@ -159,18 +124,29 @@
           </div>
         </mat-list-item>
       </mat-list>
-    <!-- </div> -->
   </div>
+
+
   <br>
+  
+
   <div class="right">
     <h2 style="text-align: center;" *ngIf="!detect_mobile">Filter:</h2>
     <mat-radio-group class="radio-group" [(ngModel)]="selectedFilter">
-      <mat-radio-button class="radio-button" *ngFor="let filter of filters" [value]="filter" [ngStyle]="{'display':'inline-block'}">
+      <mat-radio-button class="radio-button" *ngFor="let filter of filters" [value]="filter" [ngStyle]="{'display':'inline-block'}" (click)="changeView(filter)">
         {{filter}}
       </mat-radio-button>
     </mat-radio-group>
+    <mat-form-field style="width: 40%; margin-left: 1em;">
+      <mat-select placeholder="Number of Items" [(value)]="selected_item_per_page">
+        <mat-option *ngFor="let item_per_page of items_per_page" [value]="item_per_page" (click)="changeItemsPerPage(item_per_page)">
+          {{ item_per_page }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
     <div class="image">
       <img src="assets/images/banner.jpg" alt="Banner for Site" [ngStyle]="{'width': image_dimensions.width, 'height': image_dimensions.height, 'padding-left': image_dimensions.padding_left, 'padding-top': image_dimensions.padding_top, 'float': 'right'}">
     </div>
   </div>
+
 </div>
