@@ -1,6 +1,12 @@
 <div class="parentClass" (window:resize)="onResize($event)">
 
   <div class="left" *ngIf="selectedFilter==filters[0] || selectedFilter==filters[1]">
+    <mat-form-field appearance="legacy">
+      <mat-label>Search for Stories</mat-label>
+      <input matInput placeholder="Search" [(ngModel)]="search_query" name="search_query" (keyup)="searchQuery(true)">
+      <mat-hint>Minimum 3 letters</mat-hint>
+    </mat-form-field>
+    <br><br>
     <div style="width: 100%;">
       <button class="text-center" mat-raised-button color="primary" (click)="prevStories()" style="float: left;" disabled="{{prev_disabled}}">Prev</button>
       <button class="text-center" mat-raised-button color="primary" (click)="nextStories()" style="float: right;" disabled="{{next_disabled}}">Next</button>
@@ -50,6 +56,11 @@
 
 
   <div class="left" *ngIf="selectedFilter==filters[2]">
+    <mat-form-field appearance="legacy">
+      <mat-label>Search Authors</mat-label>
+      <input matInput placeholder="Search" [(ngModel)]="search_query" name="search_query" (keyup)="searchQuery(false)">
+      <mat-hint>Minimum 3 letters</mat-hint>
+    </mat-form-field>
     <div style="width: 100%;">
       <button class="text-center" mat-raised-button color="primary" (click)="prevWriters()" style="float: left;" disabled="{{prev_disabled}}">Prev</button>
       <button class="text-center" mat-raised-button color="primary" (click)="nextWriters()" style="float: right;" disabled="{{next_disabled}}">Next</button>

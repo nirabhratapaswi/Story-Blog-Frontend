@@ -183,4 +183,14 @@ export class StoriesServiceService {
     }, httpOptions);
   }
 
+  searchStories(title: string, callback) {
+    return this.http.get<storiesData[]>(this.serverUrl.concat("/stories/search?title=", title), {}).subscribe(data => {
+        for (let i=0; i<data.length; i++) {
+          data[i].likeStatus = false;
+        }
+        this.stories = data;
+        callback(data);
+      });
+  }
+
 }

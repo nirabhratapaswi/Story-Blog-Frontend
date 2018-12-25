@@ -53,6 +53,7 @@ export class StoriesComponent implements OnInit {
   	load_function: any = null;
   	items_per_page: Array<number> = [5, 10, 20, 50];
   	selected_item_per_page: number = 5;
+  	search_query: string = null;
 
   	onResize(event) {
   		if (window.innerWidth <= 600) {
@@ -262,6 +263,42 @@ export class StoriesComponent implements OnInit {
 			this.selectedFilter = "Single Writer";
 			this.singleWriter = data;
 		});
+	}
+
+	searchQuery(story: boolean) {
+		console.log("Trying to search: ", "\"".concat(this.search_query, "\""));
+		let self = this;
+		function callback_stories(stories) {
+			if (stories != null) {
+				self.stories = stories;
+			} else {
+				self.stories = [];
+			}
+			self.setNextPrevDisableForStories(stories);
+		}
+		function callback_writers(writers) {
+			if (writers != null) {
+				self.writers = writers;
+			} else {
+				self.writers = [];
+			}
+			self.setNextPrevDisableForStories(writers);
+		}
+		if (story) {	// search Stories
+			this.story_offset = 0;
+			if (this.search_query != null && this.search_query.length >= 3) {
+				this.storiesService.searchStories("\"".concat(this.search_query, "\""), callback_stories);	// \" is added as mongodb searches a normal string by splitting the whitespaces, so we provide "string" instead of string
+			} else {
+				this.prevStories();
+			}
+		} else {	// search Writers
+			this.writer_offset = 0;
+			if (this.search_query != null && this.search_query.length >= 3) {
+				this.writersService.searchWriters("\"".concat(this.search_query, "\""), callback_writers);	// \" is added as mongodb searches a normal string by splitting the whitespaces, so we provide "string" instead of string
+			} else {
+				this.prevWriters();
+			}
+		}
 	}
 
 }

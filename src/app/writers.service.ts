@@ -126,4 +126,11 @@ export class WritersService {
       });
   }
 
+  searchWriters(name: string, callback) {
+    return this.http.get<writersData[]>(this.serverUrl.concat("/writers/search?name=", name), {}).subscribe(data => {
+        this.writers = data;
+        callback(data);
+      });
+  }
+
 }
