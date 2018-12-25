@@ -49,11 +49,11 @@ export class GenresService {
   	sendMessage(message: String) {
         this.subject.next({ text: message });
     }
- 
+
     clearMessage() {
         this.subject.next();
     }
- 
+
     getMessage(): Observable<any> {
         return this.subject.asObservable();
     }
@@ -72,7 +72,6 @@ export class GenresService {
   }
 
   getGenres() {
-	console.log();
 	return this.http.get<genresData[]>(this.serverUrl.concat("/genres"), {}).subscribe(data => {
 		console.log("Genres Data from server: ", data);
 		this.genres = data;

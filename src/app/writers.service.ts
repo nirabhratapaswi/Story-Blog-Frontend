@@ -31,34 +31,34 @@ export class WritersService {
 	private subject = new Subject<any>();
   serverUrl = environment.baseUrl.concat(":", environment.port.toString());
 	message: any;
-    subscription: Subscription;
-    selfMessage: String = "Personal Message for writersService.";
+  subscription: Subscription;
+  selfMessage: String = "Personal Message for writersService.";
 
-  	constructor(private http: HttpClient, private authService: AuthService) {
-  		console.log("Writers Service constructor called...");
-  		this.getWriters();
-  		this.subscription = this.getMessage().subscribe(message => {
-  			console.log("Message recieved by writers-service: ", message);
-  			this.message = message;
-  			if (message.text == this.selfMessage || message.text == this.selfMessage.toString()) {
-  				//
-  			} else {
-  				this.getWriters();
-  			}
-  		});
-  	}
+  constructor(private http: HttpClient, private authService: AuthService) {
+  	console.log("Writers Service constructor called...");
+  	this.getWriters();
+  	this.subscription = this.getMessage().subscribe(message => {
+  		console.log("Message recieved by writers-service: ", message);
+  		this.message = message;
+  		if (message.text == this.selfMessage || message.text == this.selfMessage.toString()) {
+  			//
+  		} else {
+  			this.getWriters();
+  		}
+  	});
+  }
 
-  	sendMessage(message: String) {
-        this.subject.next({ text: message });
-    }
+  sendMessage(message: String) {
+      this.subject.next({ text: message });
+  }
  
-    clearMessage() {
-        this.subject.next();
-    }
+  clearMessage() {
+      this.subject.next();
+  }
  
-    getMessage(): Observable<any> {
-        return this.subject.asObservable();
-    }
+  getMessage(): Observable<any> {
+      return this.subject.asObservable();
+  }
 
   addWriter(name: string) {
     let httpOptions = {

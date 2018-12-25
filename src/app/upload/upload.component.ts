@@ -40,7 +40,7 @@ export class UploadComponent implements OnInit {
     if (this.available_authors == null) {
       this.getAvailableWriters();
     }
-    this.available_genres = this.writersService.getAvailableWriterVariable();
+    this.available_genres = this.genresService.getAvailableGenreVariable();
     if (this.available_genres == null) {
       this.getAvailableGenres();
     }
@@ -69,6 +69,8 @@ export class UploadComponent implements OnInit {
         this.author = null;
         this.genre_tags = null;
         this.available_authors = this.writersService.getAvailableWriterVariable();
+        this.available_genres = this.genresService.getAvailableGenreVariable();
+        console.log("Abailable Authors: ", this.available_authors, ", available genres:", this.available_genres);
         this.storiesService.sendMessage('Uploaded Story from Upload Component!');
         this.writersService.sendMessage('Uploaded Story from Upload Component!');
       }
@@ -98,7 +100,9 @@ export class UploadComponent implements OnInit {
     } else {
       this.author = this.author.concat(", ", writer);
     }
-    this.available_authors.splice(this.available_authors.indexOf(writer), 1);
+    console.log("Before Slicing Writer:", this.writersService.getAvailableWriterVariable());
+    this.available_authors = this.available_authors.slice(0, this.available_authors.indexOf(writer)).concat(this.available_authors.slice(this.available_authors.indexOf(writer) + 1, this.available_authors.length));
+    console.log("After Slicing Writer:", this.writersService.getAvailableWriterVariable());
   }
 
   addGenre(genre: string) {
@@ -108,7 +112,9 @@ export class UploadComponent implements OnInit {
     } else {
       this.genre_tags = this.genre_tags.concat(", ", genre);
     }
-    this.available_genres.splice(this.available_genres.indexOf(genre), 1);
+    console.log("Before Slicing Genre:", this.genresService.getAvailableGenreVariable());
+    this.available_genres = this.available_genres.slice(0, this.available_genres.indexOf(genre)).concat(this.available_genres.slice(this.available_genres.indexOf(genre) + 1, this.available_genres.length));
+    console.log("After Slicing Genre:", this.genresService.getAvailableGenreVariable());
   }
 
 }
