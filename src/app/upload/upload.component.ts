@@ -27,6 +27,7 @@ export class UploadComponent implements OnInit {
   genre_tags: string;
   available_authors: Array<String> = null;
   available_genres: Array<String> = null;
+  single_writer: String = null;
   serverUrl = environment.baseUrl.concat(":", environment.port.toString());
 
   constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService, private writersService: WritersService, private genresService: GenresService) {
@@ -36,6 +37,7 @@ export class UploadComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.single_writer = null;
     this.available_authors = this.writersService.getAvailableWriterVariable();
     if (this.available_authors == null) {
       this.getAvailableWriters();
@@ -95,6 +97,19 @@ export class UploadComponent implements OnInit {
 
   addWriter(writer: string) {
     console.log("Adding writer");
+    this.single_writer = writer;
+    this.author = writer;
+    console.log("Before Slicing Writer:", this.writersService.getAvailableWriterVariable());
+    this.available_authors = this.available_authors.slice(0, this.available_authors.indexOf(writer)).concat(this.available_authors.slice(this.available_authors.indexOf(writer) + 1, this.available_authors.length));
+    if (this.single_writer) {
+      this.available_authors.push(this.single_writer);
+    }
+    this.single_writer = this.author;
+    console.log("After Slicing Writer:", this.writersService.getAvailableWriterVariable());
+  }
+
+  addWriterMultiple(writer: string) {
+    console.log("Adding writer multiple");
     if (this.author == null || this.author == "") {
       this.author = writer;
     } else {
@@ -105,8 +120,8 @@ export class UploadComponent implements OnInit {
     console.log("After Slicing Writer:", this.writersService.getAvailableWriterVariable());
   }
 
-  addGenre(genre: string) {
-    console.log("Adding genre");
+  addGenreMultiple(genre: string) {
+    console.log("Adding genre multiple");
     if (this.genre_tags == null || this.genre_tags == "") {
       this.genre_tags = genre;
     } else {

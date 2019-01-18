@@ -12,7 +12,7 @@
   </mat-form-field>
   <br><br><br><br>
   <div class="select_options">Select Author: </div><mat-select placeholder="Authors" class="select_options">
-    <mat-option *ngFor="let single_author of available_authors" [value]="single_author" (click)="addWriter(single_author)">
+    <mat-option *ngFor="let single_author of available_authors" [value]="null" (click)="addWriter(single_author)">
       {{single_author}}
     </mat-option>
   </mat-select>
@@ -22,16 +22,11 @@
   </mat-form-field>
   <br><br><br><br>
   <div class="select_options">Select Genre: </div><mat-select placeholder="Genres" class="select_options">
-    <mat-option *ngFor="let single_genre of available_genres" [value]="single_genre" (click)="addGenre(single_genre)">
+    <mat-option *ngFor="let single_genre of available_genres" [value]="null" (click)="addGenreMultiple(single_genre)">
       {{single_genre}}
     </mat-option>
   </mat-select>
   <br><br><br>
-  <!-- <mat-form-field>
-    <mat-select placeholder="Select">
-      <mat-option value="option">Option</mat-option>
-    </mat-select>
-  </mat-form-field> -->
   <div class="button-row text-center">
     <button mat-raised-button color="primary" (click)="uploadStory($event)">Post Story</button>
   </div>
