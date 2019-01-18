@@ -127,7 +127,7 @@
 
 
   <div class="left" *ngIf="selectedFilter=='Single Writer'">
-      <h2>{{ singleWriter.name }} :</h2>
+      <h2>Stories by {{ singleWriter.name }} :</h2>
       <mat-list>
         <mat-list-item *ngFor="let story of singleWriter.stories; let storyIndex = index;">
           <div matLine *ngIf="story" class="pointer" (click)="goToStory(story._id)">
