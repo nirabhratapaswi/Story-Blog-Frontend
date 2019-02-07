@@ -28,6 +28,13 @@ interface changePassword {
   error: any
 }
 
+interface resendConfirmationMail {
+  success: boolean,
+  msg: String,
+  message: String,
+  error: any
+}
+
 interface changeName {
   success: boolean,
   msg: String,
@@ -179,6 +186,10 @@ export class AuthService {
 
   forgotPassword(email: string) {
     return this.http.get<changePassword>(this.serverUrl.concat("/users/change_password?email=", email), {});
+  }
+
+  resendConfirmationMail(email: string) {
+    return this.http.get<resendConfirmationMail>(this.serverUrl.concat("/users/resend_confirmation_mail?email=", email), {});
   }
 
   changeName(name: string) {

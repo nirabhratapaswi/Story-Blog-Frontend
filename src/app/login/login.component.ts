@@ -95,4 +95,25 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  resendConfirmationMail() {
+    if (this.username == "" || this.username == null || !this.validateEmail(this.username)) {
+      this.warning = "Please enter the associated email id!";
+      return;
+    }
+    this.authService.resendConfirmationMail(this.username).subscribe(data => {
+      console.log("Data: ", data);
+      if (!data.success) {
+        if (data.message == null || data.message == "" || data.message == undefined) {
+          data.message = "Something wrong with server, try again later.";
+        }
+        this.warning = data.message.toString();
+        this.message = null;
+        return;
+      }
+
+      this.warning = null;
+      this.message = "Confirmation mail resent, check your mail and confirm your email before logging in!!";
+    });
+  }
+
 }
