@@ -276,7 +276,7 @@ export class StoriesComponent implements OnInit {
       	});
   	}
 
-	likeStory(story_id: string, story_index: number) {
+	likeStory(story_id: string, single_story: boolean) {
     	if (!this.auth.getJwtToken()) {
     		return;
     	}
@@ -290,7 +290,12 @@ export class StoriesComponent implements OnInit {
     	this.http.get<storiesData>(this.serverUrl.concat("/stories/like/", story_id), httpOptions).subscribe(data => {
 			if (data.success) {
 				this.story_offset -= this.story_chunk_size;
-				this.nextStories();
+				console.log("single_story: ", single_story, ", singleStory: ", this.singleStory);
+				if (single_story) {
+					this.goToStory(this.singleStory._id);
+				} else {
+					this.nextStories();					
+				}
 			}
 		});
     }

@@ -17,7 +17,7 @@
       <div *ngFor="let story of stories; let storyIndex = index;" style="width: auto;">
         <mat-grid-tile>
           <mat-card class="story_card" style="width: 90%;">
-            <mat-card-title class="center" (click)="goToStory(story._id)">
+            <mat-card-title class="center" (click)="goToStory(story._id, null)">
               <h4 class="pointer">{{ story.title }}</h4>
               <div style="text-align: left; font-size: 14px;">
                 <b>Writers: </b>
@@ -152,10 +152,10 @@
       <mat-card-footer onmousedown='return false;' onselectstart='return false;'>
         <mat-icon class="mat-icon-rtl-mirror" svgIcon="assets/images/favourite.svg"></mat-icon>
         <span *ngIf="singleStory.likeStatus">
-          <button type="button" color="primary" mat-icon-button (click)="likeStory(singleStory._id, null)"><mat-icon>thumb_up</mat-icon></button>
+          <button type="button" color="primary" mat-icon-button (click)="likeStory(singleStory._id, true)"><mat-icon>thumb_up</mat-icon></button>
         </span>
         <span *ngIf="!singleStory.likeStatus">
-          <button type="button" color="warn" mat-icon-button (click)="likeStory(singleStory._id, null)"><mat-icon>thumb_up</mat-icon></button>
+          <button type="button" color="warn" mat-icon-button (click)="likeStory(singleStory._id, true)"><mat-icon>thumb_up</mat-icon></button>
         </span>
         <span>+ {{ singleStory.likes.length }}</span>
       </mat-card-footer>
@@ -167,7 +167,7 @@
       <h2>Stories by {{ singleWriter.name }} :</h2>
       <mat-list>
         <mat-list-item *ngFor="let story of singleWriter.stories; let storyIndex = index;">
-          <div matLine *ngIf="story" class="pointer" (click)="goToStory(story._id)">
+          <div matLine *ngIf="story" class="pointer" (click)="goToStory(story._id, null)">
               <span> &#9658; <i>{{ story.title }}</i> </span>
           </div>
         </mat-list-item>
@@ -179,7 +179,7 @@
       <h2>Stories with genre {{ singleGenre.name }} :</h2>
       <mat-list>
         <mat-list-item *ngFor="let story of singleGenre.stories; let storyIndex = index;">
-          <div matLine *ngIf="story" class="pointer" (click)="goToStory(story._id)">
+          <div matLine *ngIf="story" class="pointer" (click)="goToStory(story._id, null)">
               <span> &#9658; <i>{{ story.title }}</i> </span>
           </div>
         </mat-list-item>
