@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../auth.service';
 import { StoriesServiceService } from '../stories-service.service';
 import { WritersService } from '../writers.service';
+import { GenresService } from '../genres.service';
 import { Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -28,16 +29,21 @@ export class StoriesComponent implements OnInit {
 	message: any;
     subscription: Subscription;
     writers: Array<any> = null;
+    genres: Array<any> = null;
     singleStory: any = null;
     singleWriter: any = null;
+    singleGenre: any = null;
     story_id: String = "";
     writer_id: String = "";
+    genre_id: String = "";
     selectedFilter: string = "All Stories";
-  	filters: string[] = ["All Stories", "Maximum Likes", "Writers"];
+  	filters: string[] = ["All Stories", "Maximum Likes", "Writers", "Genres"];
   	story_offset: number = 0;
   	story_chunk_size: number = 5;
   	writer_offset: number = 0;
   	writer_chunk_size: number = 5;
+  	genre_offset: number = 0;
+  	genre_chunk_size: number = 5;
   	serverUrl = environment.baseUrl.concat(":", environment.port.toString());
   	screen_columns: number = 3;
   	detect_mobile: boolean = false;
@@ -89,7 +95,7 @@ export class StoriesComponent implements OnInit {
   		}
   	}
 
-	constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService, private writersService: WritersService) {
+	constructor(private http: HttpClient, private auth: AuthService, private storiesService: StoriesServiceService, private writersService: WritersService, private genresService: GenresService) {
 		this.subscription = this.storiesService.getMessage().subscribe(message => {
 			console.log("Message recieved by storiesComponent: ", message);
 			this.message = message;
@@ -132,6 +138,9 @@ export class StoriesComponent implements OnInit {
 		} else if (filter == this.filters[2]) {
 			this.writer_offset = -this.writer_chunk_size;
 			this.nextWriters();
+		} else if (filter == this.filters[3]) {
+			this.genre_offset = -this.genre_chunk_size;
+			this.nextGenres();
 		}
 	}
 
@@ -150,6 +159,19 @@ export class StoriesComponent implements OnInit {
 
 	setNextPrevDisableForWriters(writers) {
 		if (this.writer_chunk_size > this.writers.length || writers == null || (writers != null && writers.length == 0)) {
+			this.next_disabled = true;
+		} else {
+			this.next_disabled = false;
+		}
+		if (this.writer_offset == 0) {
+			this.prev_disabled = true;
+		} else {
+			this.prev_disabled = false;
+		}
+	}
+
+	setNextPrevDisableForGenres(genres) {
+		if (this.genre_chunk_size > this.genres.length || genres == null || (genres != null && genres.length == 0)) {
 			this.next_disabled = true;
 		} else {
 			this.next_disabled = false;
@@ -217,6 +239,34 @@ export class StoriesComponent implements OnInit {
 	  	this.writersService.getWritersVariableChunkViaCallback(this.writer_offset, this.writer_chunk_size, callback);
 	}
 
+	prevGenres() {
+		this.genre_offset =  (this.genre_offset - this.writer_chunk_size >= 0) ? (this.genre_offset - this.writer_chunk_size) : 0;
+		let self = this;
+	  	function callback(genres) {
+	  		self.genres = genres;
+	  		self.setNextPrevDisableForGenres(genres);
+	  	}
+	  	this.genresService.getGenresVariableChunkViaCallback(this.writer_offset, this.writer_chunk_size, callback);
+	}
+
+	nextGenres() {
+		if (this.genres != null && this.genre_offset >= 0) {
+			this.genre_offset = (this.genre_chunk_size > this.genres.length) ? this.genre_offset : (this.genre_offset + this.genre_chunk_size);
+		} else {
+			this.genre_offset = 0;
+		}
+		let self = this;
+	  	function callback(genres) {
+	  		if (genres != null && genres.length != 0) {
+	  			self.genres = genres;
+	  		} else {
+	  			self.genre_offset = self.genre_offset - self.genre_chunk_size;
+	  		}
+	  		self.setNextPrevDisableForGenres(genres);
+	  	}
+	  	this.genresService.getGenresVariableChunkViaCallback(this.genre_offset, this.genre_chunk_size, callback);
+	}
+
   	goToStory(story_id) {
   		this.story_id = story_id;
   		console.log("Requested to go to story with id:", story_id);
@@ -245,18 +295,6 @@ export class StoriesComponent implements OnInit {
 		});
     }
 
-    getWriters() {
-  		let self = this;
-		function callback(writers) {
-	  		self.writers = writers;
-	  	}
-	  	if (this.writersService.getWritersVariable() == null) {
-	  		this.writersService.getWritersVariableViaCallback(callback);
-	  	} else {
-	  		this.writers = this.writersService.getWritersVariable();
-	  	}
-  	}
-
 	goToWriter(writer_id: string) {
 		this.writer_id = writer_id;
 		this.writersService.getOneWriter(writer_id).subscribe(data => {
@@ -265,7 +303,15 @@ export class StoriesComponent implements OnInit {
 		});
 	}
 
-	searchQuery(story: boolean) {
+	goToGenre(genre_id: string) {
+		this.genre_id = genre_id;
+		this.genresService.getOneGenre(genre_id).subscribe(data => {
+			this.selectedFilter = "Single Genre";
+			this.singleGenre = data;
+		});
+	}
+
+	searchQuery(mode: String) {
 		console.log("Trying to search: ", "\"".concat(this.search_query, "\""));
 		let self = this;
 		function callback_stories(stories) {
@@ -284,19 +330,34 @@ export class StoriesComponent implements OnInit {
 			}
 			self.setNextPrevDisableForStories(writers);
 		}
-		if (story) {	// search Stories
+		function callback_genres(genres) {
+			if (genres != null) {
+				self.genres = genres;
+			} else {
+				self.genres = [];
+			}
+			self.setNextPrevDisableForStories(genres);
+		}
+		if (mode == "story") {	// search Stories
 			this.story_offset = 0;
 			if (this.search_query != null && this.search_query.length >= 3) {
 				this.storiesService.searchStories("\"".concat(this.search_query, "\""), callback_stories);	// \" is added as mongodb searches a normal string by splitting the whitespaces, so we provide "string" instead of string
 			} else {
 				this.prevStories();
 			}
-		} else {	// search Writers
+		} else if (mode == "writer") {	// search Writers
 			this.writer_offset = 0;
 			if (this.search_query != null && this.search_query.length >= 3) {
 				this.writersService.searchWriters("\"".concat(this.search_query, "\""), callback_writers);	// \" is added as mongodb searches a normal string by splitting the whitespaces, so we provide "string" instead of string
 			} else {
 				this.prevWriters();
+			}
+		} else if (mode == "genre") {
+			this.genre_offset = 0;
+			if (this.search_query != null && this.search_query.length >= 3) {
+				this.genresService.searchGenres("\"".concat(this.search_query, "\""), callback_genres);	// \" is added as mongodb searches a normal string by splitting the whitespaces, so we provide "string" instead of string
+			} else {
+				this.prevGenres();
 			}
 		}
 	}

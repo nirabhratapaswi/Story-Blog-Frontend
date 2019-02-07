@@ -74,12 +74,11 @@ export class WritersService {
   }
 
   getWriters() {
-		console.log();
-	  	return this.http.get<writersData[]>(this.serverUrl.concat("/writers"), {}).subscribe(data => {
-	  		console.log("Writers Data from server: ", data);
-	  		this.writers = data;
-	  		this.sendMessage(this.selfMessage);
-	  	});
+	  return this.http.get<writersData[]>(this.serverUrl.concat("/writers"), {}).subscribe(data => {
+	  	console.log("Writers Data from server: ", data);
+	  	this.writers = data;
+	  	this.sendMessage(this.selfMessage);
+	  });
   }
 
   getAvailableWriters() {

@@ -9,6 +9,7 @@ import { environment } from '../environments/environment';
 interface genresData {
   success: boolean,
   name: String,
+  stories: [any],
   created_at: Date,
   updated_at: Date
 }
@@ -25,6 +26,7 @@ interface addGenre {
 export class GenresService {
 
 	genres: Array<any> = null;
+  genres_chunk: Array<any> = null;
 	available_genres: Array<String> = null;
 	private subject = new Subject<any>();
 	serverUrl = environment.baseUrl.concat(":", environment.port.toString());
@@ -72,11 +74,11 @@ export class GenresService {
   }
 
   getGenres() {
-	return this.http.get<genresData[]>(this.serverUrl.concat("/genres"), {}).subscribe(data => {
-		console.log("Genres Data from server: ", data);
-		this.genres = data;
-		this.sendMessage(this.selfMessage);
-	});
+  	return this.http.get<genresData[]>(this.serverUrl.concat("/genres"), {}).subscribe(data => {
+  		console.log("Genres Data from server: ", data);
+  		this.genres = data;
+  		this.sendMessage(this.selfMessage);
+  	});
   }
 
   getAvailableGenres() {
@@ -86,6 +88,10 @@ export class GenresService {
         this.available_genres = JSON.parse(data);
         this.sendMessage(this.selfMessage);
       });
+  }
+
+  getOneGenre(genre_id: string) {
+    return this.http.get<genresData[]>(this.serverUrl.concat("/genres/getOne/").concat(genre_id), {});
   }
 
   getGenresVariable() {
@@ -111,4 +117,19 @@ export class GenresService {
         callback(this.available_genres);
       });
   }
+
+  getGenresVariableChunkViaCallback(offset: number, size: number, callback) {
+    return this.http.get<genresData[]>(this.serverUrl.concat("/genres/chunk/", offset.toString(), "/", size.toString()), {}).subscribe(data => {
+        this.genres_chunk = data;
+        callback(this.genres_chunk);
+      });
+  }
+
+  searchGenres(name: string, callback) {
+    return this.http.get<genresData[]>(this.serverUrl.concat("/genres/search?name=", name), {}).subscribe(data => {
+        this.genres = data;
+        callback(data);
+      });
+  }
+
 }

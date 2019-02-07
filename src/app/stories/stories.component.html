@@ -1,9 +1,10 @@
 <div class="parentClass" (window:resize)="onResize($event)">
 
+  <!-- For stories -->
   <div class="left" *ngIf="selectedFilter==filters[0] || selectedFilter==filters[1]">
     <mat-form-field appearance="legacy">
       <mat-label>Search for Stories</mat-label>
-      <input matInput placeholder="Search" [(ngModel)]="search_query" name="search_query" (keyup)="searchQuery(true)">
+      <input matInput placeholder="Search" [(ngModel)]="search_query" name="search_query" (keyup)="searchQuery('story')">
       <mat-hint>Minimum 3 letters</mat-hint>
     </mat-form-field>
     <br><br>
@@ -54,11 +55,11 @@
     <br>
   </div>
 
-
+  <!-- For writers -->
   <div class="left" *ngIf="selectedFilter==filters[2]">
     <mat-form-field appearance="legacy">
       <mat-label>Search Authors</mat-label>
-      <input matInput placeholder="Search" [(ngModel)]="search_query" name="search_query" (keyup)="searchQuery(false)">
+      <input matInput placeholder="Search" [(ngModel)]="search_query" name="search_query" (keyup)="searchQuery('writer')">
       <mat-hint>Minimum 3 letters</mat-hint>
     </mat-form-field>
     <div style="width: 100%;">
@@ -91,7 +92,43 @@
     <br>
   </div>
 
+  <!-- For genres -->
+  <div class="left" *ngIf="selectedFilter==filters[3]">
+    <mat-form-field appearance="legacy">
+      <mat-label>Search Genres</mat-label>
+      <input matInput placeholder="Search" [(ngModel)]="search_query" name="search_query" (keyup)="searchQuery('genre')">
+      <mat-hint>Minimum 3 letters</mat-hint>
+    </mat-form-field>
+    <div style="width: 100%;">
+      <button class="text-center" mat-raised-button color="primary" (click)="prevWriters()" style="float: left;" disabled="{{prev_disabled}}">Prev</button>
+      <button class="text-center" mat-raised-button color="primary" (click)="nextWriters()" style="float: right;" disabled="{{next_disabled}}">Next</button>
+    </div>
+    <br><br>
+    <mat-grid-list cols="{{ screen_columns }}" rowHeight="{{ row_height }}">
+      <div *ngFor="let genre of genres; let genreIndex = index;" style="width: auto;">
+        <mat-grid-tile>
+          <mat-card class="story_card" style="width: 90%;">
+            <mat-card-title class="center" (click)="goToGenre(genre._id)">
+              <h4 class="pointer">{{ genre.name }}</h4>
+              <div style="text-align: left; font-size: 14px;">
+                <b>Stories avaibable: </b>
+                <span *ngIf="genre.stories != undefined || genre.stories != null">
+                  {{ genre.stories.length }}
+                </span>
+              </div>
+            </mat-card-title>
+          </mat-card>
+        </mat-grid-tile>
+      </div>
+    </mat-grid-list>
+    <div style="width: 100%;">
+      <button class="text-center" mat-raised-button color="primary" (click)="prevWriters()" style="float: left;" disabled="{{prev_disabled}}">Prev</button>
+      <button class="text-center" mat-raised-button color="primary" (click)="nextWriters()" style="float: right;" disabled="{{next_disabled}}">Next</button>
+    </div>
+    <br>
+  </div>
 
+  <!-- For single story -->
   <div class="left" *ngIf="selectedFilter=='Single Story'">
     <mat-card class="full_story_card">
       <mat-card-title class="center">
@@ -125,11 +162,23 @@
     </mat-card>
   </div>
 
-
+  <!-- For single writer -->
   <div class="left" *ngIf="selectedFilter=='Single Writer'">
       <h2>Stories by {{ singleWriter.name }} :</h2>
       <mat-list>
         <mat-list-item *ngFor="let story of singleWriter.stories; let storyIndex = index;">
+          <div matLine *ngIf="story" class="pointer" (click)="goToStory(story._id)">
+              <span> &#9658; <i>{{ story.title }}</i> </span>
+          </div>
+        </mat-list-item>
+      </mat-list>
+  </div>
+
+  <!-- For single genre -->
+  <div class="left" *ngIf="selectedFilter=='Single Genre'">
+      <h2>Stories with genre {{ singleGenre.name }} :</h2>
+      <mat-list>
+        <mat-list-item *ngFor="let story of singleGenre.stories; let storyIndex = index;">
           <div matLine *ngIf="story" class="pointer" (click)="goToStory(story._id)">
               <span> &#9658; <i>{{ story.title }}</i> </span>
           </div>
